@@ -17,7 +17,8 @@ CLASS zcl_trm_rest_resource DEFINITION
 
     METHODS add_lang_tr
       EXPORTING ev_status TYPE i
-                ev_reason TYPE string.
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
 ENDCLASS.
 
 
@@ -41,11 +42,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD handle_request.
-    DATA: lv_method   TYPE seocpdname,
-          lv_status   TYPE i,
-          lv_reason   TYPE string,
-          lo_response TYPE REF TO if_rest_entity,
-          ls_message  TYPE symsg.
+    DATA: lv_method        TYPE seocpdname,
+          lv_status        TYPE i,
+          lv_reason        TYPE string,
+          lo_trm_exception TYPE REF TO zcx_trm_exception,
+          lo_response      TYPE REF TO if_rest_entity,
+          ls_message       TYPE symsg.
     lv_method = mo_request->get_uri_attribute( iv_name = 'METH' ).
     CONDENSE lv_method.
     TRANSLATE lv_method TO UPPER CASE.
@@ -54,6 +56,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
           IMPORTING
             ev_status = lv_status
             ev_reason = lv_reason.
+        IF lv_status IS INITIAL.
+          lv_status = cl_rest_status_code=>gc_success_ok.
+        ENDIF.
+      CATCH zcx_trm_exception INTO lo_trm_exception.
+        lv_status = cl_rest_status_code=>gc_server_error_internal.
+        lv_reason = lo_trm_exception->reason( ).
       CATCH cx_root.
         lv_status = cl_rest_status_code=>gc_server_error_internal.
         lv_reason = 'Method call exception'.
@@ -77,7 +85,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              trkorr   TYPE trkorr,
              devclass TYPE lxe_tt_packg,
            END OF ty_request.
-    DATA: lv_request_json TYPE string,
+    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+          lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
@@ -88,28 +97,11 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     lv_request_json = get_request_json( ).
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
-    CALL FUNCTION 'ZTRM_ADD_LANG_TR'
+    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    lo_transport->add_translations(
       EXPORTING
-        iv_trkorr            = ls_request-trkorr
-      TABLES
-        it_devclass          = ls_request-devclass
-      EXCEPTIONS
-        trm_rfc_unauthorized = 1
-        invalid_input        = 2
-        generic              = 3
-        OTHERS               = 4.
-    IF sy-subrc EQ 0.
-      ev_status = 200.
-    ELSE.
-      ev_status = 500.
-      IF sy-subrc EQ 1.
-        ev_reason = 'trm_rfc_unauthorized'.
-      ELSEIF sy-subrc EQ 2.
-        ev_reason = 'invalid_input'.
-      ELSEIF sy-subrc EQ 3.
-        ev_reason = 'generic'.
-      ENDIF.
-    ENDIF.
+        it_devclass = ls_request-devclass
+    ).
   ENDMETHOD.
 
 ENDCLASS.
