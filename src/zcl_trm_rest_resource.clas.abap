@@ -5,13 +5,10 @@ CLASS zcl_trm_rest_resource DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    METHODS constructor
-      IMPORTING iv_method TYPE seocpdname.
+    METHODS constructor.
     METHODS if_rest_resource~post REDEFINITION.
   PROTECTED SECTION.
   PRIVATE SECTION.
-    DATA: gv_method TYPE seocpdname.
-
     METHODS get_request_json
       RETURNING VALUE(rv_json) TYPE string.
 
@@ -26,17 +23,30 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD constructor.
     super->constructor( ).
-    gv_method = to_upper( iv_method ).
-    CONDENSE gv_method.
   ENDMETHOD.
 
   METHOD if_rest_resource~post.
-    DATA: lv_status TYPE i,
-          lv_reason TYPE string.
-    CALL METHOD me->(gv_method)
-      IMPORTING
-        ev_status = lv_status
-        ev_reason = lv_reason.
+    DATA: lv_method   TYPE seocpdname,
+          lv_status   TYPE i,
+          lv_reason   TYPE string,
+          lo_response TYPE REF TO if_rest_entity,
+          ls_message  TYPE symsg.
+    lv_method = mo_request->get_uri_attribute( iv_name = 'METH' ).
+    TRY.
+        CALL METHOD me->(lv_method)
+          IMPORTING
+            ev_status = lv_status
+            ev_reason = lv_reason.
+      CATCH cx_root.
+        lv_status = cl_rest_status_code=>gc_server_error_internal.
+        lv_reason = 'Method call exception'.
+    ENDTRY.
+    IF lv_status <> cl_rest_status_code=>gc_success_ok.
+      lo_response = mo_response->create_entity( ).
+      lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+      MOVE-CORRESPONDING sy TO ls_message.
+      lo_response->set_string_data( /ui2/cl_json=>serialize( ls_message ) ).
+    ENDIF.
     mo_response->set_status( lv_status ).
     mo_response->set_reason( lv_reason ).
   ENDMETHOD.
@@ -52,11 +62,6 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            END OF ty_request.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request.
-
-    IF mo_request->get_method( ) <> 'POST'.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
 
     lv_request_json = get_request_json( ).
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).

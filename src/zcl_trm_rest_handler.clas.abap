@@ -16,8 +16,18 @@ ENDCLASS.
 CLASS zcl_trm_rest_handler IMPLEMENTATION.
 
   METHOD if_rest_application~get_root_handler.
-    DATA: lo_handler         TYPE REF TO cl_rest_router.
+    DATA: lo_handler       TYPE REF TO cl_rest_router,
+          lt_parambind_tab TYPE abap_parmbind_tab.
+
     CREATE OBJECT lo_handler.
+
+    lo_handler->attach(
+      EXPORTING
+        iv_template      = '/{METH:.*}'
+        iv_handler_class = 'ZCL_TRM_REST_RESOURCE'
+    ).
+
+    ro_root_handler = lo_handler.
   ENDMETHOD.
 
   METHOD handle_csrf_token.
