@@ -230,7 +230,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
           lt_data         TYPE STANDARD TABLE OF tab512,
           lo_response     TYPE REF TO if_rest_entity.
 
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
       RETURN.
     ENDIF.
