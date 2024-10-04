@@ -149,6 +149,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD if_rest_resource~get.
+    CHECK mo_request->get_uri_path( ) NE '/'.
     handle_request( ).
   ENDMETHOD.
 
