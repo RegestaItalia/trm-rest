@@ -18,6 +18,11 @@ CLASS zcl_trm_rest_resource DEFINITION
     METHODS get_request_json
       RETURNING VALUE(rv_json) TYPE string.
 
+    METHODS read_table
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
+
     METHODS add_lang_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -211,6 +216,45 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD get_request_json.
     rv_json = mo_request->get_entity( )->get_string_data( ).
+  ENDMETHOD.
+
+  METHOD read_table.
+    TYPES: BEGIN OF ty_request,
+             query_table TYPE tabname,
+             delimiter   TYPE so_text001,
+             options     TYPE esh_t_co_rfcrt_options,
+             fields      TYPE esh_t_co_rfcrt_fields,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          lt_data         TYPE STANDARD TABLE OF tab512,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+    CALL FUNCTION 'RFC_READ_TABLE'
+      EXPORTING
+        query_table = ls_request-query_table
+        delimiter   = ls_request-delimiter
+      TABLES
+        options     = ls_request-options
+        fields      = ls_request-fields
+        data        = lt_data
+      EXCEPTIONS
+        OTHERS      = 1.
+    IF sy-subrc <> 0.
+      ev_status = cl_rest_status_code=>gc_server_error_internal.
+    ELSE.
+      lo_response = mo_response->create_entity( ).
+      lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+      lo_response->set_string_data( /ui2/cl_json=>serialize( lt_data ) ).
+    ENDIF.
   ENDMETHOD.
 
   METHOD add_lang_tr.
