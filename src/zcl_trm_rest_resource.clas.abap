@@ -208,7 +208,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       lo_response = mo_response->create_entity( ).
       lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
       MOVE-CORRESPONDING sy TO ls_message.
-      lo_response->set_string_data( /ui2/cl_json=>serialize( ls_message ) ).
+      lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_message pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
     ENDIF.
     mo_response->set_status( lv_status ).
     mo_response->set_reason( lv_reason ).
@@ -253,7 +253,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ELSE.
       lo_response = mo_response->create_entity( ).
       lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-      lo_response->set_string_data( /ui2/cl_json=>serialize( lt_data ) ).
+      lo_response->set_string_data( /ui2/cl_json=>serialize( data = lt_data pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
     ENDIF.
   ENDMETHOD.
 
@@ -315,7 +315,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD add_skip_trkorr.
@@ -396,7 +396,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD create_package.
@@ -452,7 +452,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD delete_transport.
@@ -585,7 +585,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD get_dir_trans.
@@ -608,7 +608,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD get_file_sys.
@@ -631,7 +631,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD get_obj_lock_tr.
@@ -670,7 +670,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD get_transport_layer.
@@ -693,7 +693,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD import_tr.
@@ -741,7 +741,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD ping.
@@ -761,7 +761,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD read_tms_queue.
@@ -794,7 +794,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD release_tr.
@@ -830,7 +830,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD rename_transport_request.
@@ -1032,7 +1032,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( ls_response ) ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD write_binary_file.
