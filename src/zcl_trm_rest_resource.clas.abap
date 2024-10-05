@@ -12,7 +12,8 @@ CLASS zcl_trm_rest_resource DEFINITION
     METHODS if_rest_resource~delete REDEFINITION.
   PROTECTED SECTION.
   PRIVATE SECTION.
-    TYPES: tyt_et071 TYPE STANDARD TABLE OF e071 WITH DEFAULT KEY.
+    TYPES: tyt_et071 TYPE STANDARD TABLE OF e071 WITH DEFAULT KEY,
+           tyt_senvi TYPE STANDARD TABLE OF senvi WITH DEFAULT KEY.
 
     METHODS handle_request.
     METHODS get_request_json
@@ -20,8 +21,10 @@ CLASS zcl_trm_rest_resource DEFINITION
 
     METHODS read_table
       EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+                ev_reason TYPE string.
+    METHODS repository_environment
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string.
 
     METHODS add_lang_tr
       EXPORTING ev_status TYPE i
@@ -254,6 +257,42 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       lo_response = mo_response->create_entity( ).
       lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
       lo_response->set_string_data( /ui2/cl_json=>serialize( data = lt_data pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD repository_environment.
+    TYPES: BEGIN OF ty_request,
+             obj_type    TYPE seu_obj,
+             object_name TYPE sobj_name,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             environment_tab TYPE tyt_senvi,
+           END OF ty_response.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+    CALL FUNCTION 'REPOSITORY_ENVIRONMENT_RFC'
+      EXPORTING
+        obj_type        = ls_request-obj_type
+        object_name     = ls_request-object_name
+      TABLES
+        environment_tab = ls_response-environment_tab.
+    IF sy-subrc <> 0.
+      ev_status = cl_rest_status_code=>gc_server_error_internal.
+    ELSE.
+      lo_response = mo_response->create_entity( ).
+      lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+      lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
     ENDIF.
   ENDMETHOD.
 
