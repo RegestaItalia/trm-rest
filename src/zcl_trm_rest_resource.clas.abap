@@ -26,6 +26,10 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
 
+    METHODS get_dest
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string.
+
     METHODS add_lang_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -294,6 +298,26 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
       lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
     ENDIF.
+  ENDMETHOD.
+
+  METHOD get_dest.
+    TYPES: BEGIN OF ty_response,
+             dest TYPE sy-sysid,
+           END OF ty_response.
+    DATA: ls_response TYPE ty_response,
+          lo_response TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+
+    ls_response-dest = sy-sysid.
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
   ENDMETHOD.
 
   METHOD add_lang_tr.
