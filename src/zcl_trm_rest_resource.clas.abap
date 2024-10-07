@@ -18,6 +18,8 @@ CLASS zcl_trm_rest_resource DEFINITION
     METHODS handle_request.
     METHODS get_request_json
       RETURNING VALUE(rv_json) TYPE string.
+    METHODS get_request_rfcdest
+      RETURNING VALUE(rv_rfcdest) TYPE rfcdest.
 
     METHODS read_table
       EXPORTING ev_status TYPE i
@@ -25,7 +27,6 @@ CLASS zcl_trm_rest_resource DEFINITION
     METHODS repository_environment
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
-
     METHODS get_dest
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
@@ -225,6 +226,13 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     rv_json = mo_request->get_entity( )->get_string_data( ).
   ENDMETHOD.
 
+  METHOD get_request_rfcdest.
+    rv_rfcdest = mo_request->get_uri_query_parameter( 'rfcdest' ).
+    IF rv_rfcdest IS INITIAL.
+      rv_rfcdest = 'NONE'.
+    ENDIF.
+  ENDMETHOD.
+
   METHOD read_table.
     TYPES: BEGIN OF ty_request,
              query_table TYPE tabname,
@@ -234,6 +242,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            END OF ty_request.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request,
+          lv_destination  TYPE rfcdest,
           lt_data         TYPE STANDARD TABLE OF tab512,
           lo_response     TYPE REF TO if_rest_entity.
 
@@ -244,8 +253,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lv_request_json = get_request_json( ).
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    lv_destination = get_request_rfcdest( ).
 
-    CALL FUNCTION 'RFC_READ_TABLE'
+    CALL FUNCTION 'RFC_READ_TABLE' DESTINATION lv_destination
       EXPORTING
         query_table = ls_request-query_table
         delimiter   = ls_request-delimiter
@@ -274,6 +284,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            END OF ty_response.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request,
+          lv_destination  TYPE rfcdest,
           ls_response     TYPE ty_response,
           lo_response     TYPE REF TO if_rest_entity.
 
@@ -284,8 +295,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lv_request_json = get_request_json( ).
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    lv_destination = get_request_rfcdest( ).
 
-    CALL FUNCTION 'REPOSITORY_ENVIRONMENT_RFC'
+    CALL FUNCTION 'REPOSITORY_ENVIRONMENT_RFC' DESTINATION lv_destination
       EXPORTING
         obj_type        = ls_request-obj_type
         object_name     = ls_request-object_name
@@ -304,16 +316,23 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     TYPES: BEGIN OF ty_response,
              dest TYPE sy-sysid,
            END OF ty_response.
-    DATA: ls_response TYPE ty_response,
-          lo_response TYPE REF TO if_rest_entity.
+    DATA: lv_destination TYPE rfcdest,
+          ls_rfcsi       TYPE rfcsi,
+          ls_response    TYPE ty_response,
+          lo_response    TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
       RETURN.
     ENDIF.
 
+    lv_destination = get_request_rfcdest( ).
 
-    ls_response-dest = sy-sysid.
+    CALL FUNCTION 'RFC_SYSTEM_INFO' DESTINATION lv_destination
+      IMPORTING
+        rfcsi_export = ls_rfcsi.
+
+    ls_response = ls_rfcsi-rfcsysid.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -1089,7 +1108,6 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
       RETURN.
     ENDIF.
-
 
     ls_response-version = zif_trm=>version.
 
