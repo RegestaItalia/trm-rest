@@ -302,7 +302,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
         obj_type        = ls_request-obj_type
         object_name     = ls_request-object_name
       TABLES
-        environment_tab = ls_response-environment_tab.
+        environment_tab = ls_response-environment_tab
+      EXCEPTIONS
+        OTHERS          = 1.
     IF sy-subrc <> 0.
       ev_status = cl_rest_status_code=>gc_server_error_internal.
     ELSE.
@@ -330,13 +332,18 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     CALL FUNCTION 'RFC_SYSTEM_INFO' DESTINATION lv_destination
       IMPORTING
-        rfcsi_export = ls_rfcsi.
+        rfcsi_export = ls_rfcsi
+      EXCEPTIONS
+        OTHERS       = 1.
 
-    ls_response = ls_rfcsi-rfcsysid.
-
-    lo_response = mo_response->create_entity( ).
-    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
+    IF sy-subrc <> 0.
+      ev_status = cl_rest_status_code=>gc_server_error_internal.
+    ELSE.
+      ls_response = ls_rfcsi-rfcsysid.
+      lo_response = mo_response->create_entity( ).
+      lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+      lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
+    ENDIF.
   ENDMETHOD.
 
   METHOD add_lang_tr.
