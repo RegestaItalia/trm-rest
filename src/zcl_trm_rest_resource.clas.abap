@@ -216,10 +216,14 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
           lv_reason = 'Method call exception'.
       ENDTRY.
     ENDIF.
-    IF lv_status <> cl_rest_status_code=>gc_success_ok AND sy-subrc <> 0.
+    IF lv_status <> cl_rest_status_code=>gc_success_ok.
       lo_response = mo_response->create_entity( ).
       lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-      MOVE-CORRESPONDING sy TO ls_message.
+      IF lo_trm_exception IS BOUND.
+        ls_message = lo_trm_exception->message.
+      ELSE.
+        MOVE-CORRESPONDING sy TO ls_message.
+      ENDIF.
       lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_message pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
     ENDIF.
     mo_response->set_status( lv_status ).
