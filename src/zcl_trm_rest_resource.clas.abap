@@ -680,6 +680,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
+    CREATE OBJECT lo_package EXPORTING iv_devclass = ls_request-devclass.
     lo_package->get_objects(
       IMPORTING
         et_tadir    = ls_response-tadir
