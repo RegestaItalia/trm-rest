@@ -1137,8 +1137,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD write_binary_file.
-    DATA: lv_file_path TYPE string,
-          lv_file      TYPE xstring.
+    DATA: lv_file_path  TYPE string,
+          lv_xfile_path TYPE xstring,
+          lv_file       TYPE xstring.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
@@ -1147,6 +1148,19 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     DATA(lo_entity) = NEW cl_rest_multipart_form_data( mo_request->get_entity( ) ).
     lv_file_path = lo_entity->get_form_field( 'file_path' ).
+    IF lv_file_path IS INITIAL.
+      lo_entity->get_file(
+        EXPORTING
+          iv_name = 'file_path'
+        IMPORTING
+          ev_data = lv_xfile_path
+      ).
+      lv_file_path = cl_bcs_convert=>xstring_to_string(
+        EXPORTING
+          iv_xstr   = lv_xfile_path
+          iv_cp     = 1100
+      ).
+    ENDIF.
     lo_entity->get_file(
       EXPORTING
         iv_name = 'file'
