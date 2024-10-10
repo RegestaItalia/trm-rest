@@ -12,6 +12,10 @@ CLASS zcl_trm_rest_resource DEFINITION
     METHODS if_rest_resource~delete REDEFINITION.
   PROTECTED SECTION.
   PRIVATE SECTION.
+    TYPES: BEGIN OF ty_message_response,
+             message TYPE symsg,
+             log     TYPE zcx_trm_exception=>tyt_log,
+           END OF ty_message_response.
     TYPES: tyt_et071 TYPE STANDARD TABLE OF e071 WITH DEFAULT KEY,
            tyt_senvi TYPE STANDARD TABLE OF senvi WITH DEFAULT KEY.
 
@@ -188,7 +192,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
           lv_reason        TYPE string,
           lo_trm_exception TYPE REF TO zcx_trm_exception,
           lo_response      TYPE REF TO if_rest_entity,
-          ls_message       TYPE symsg.
+          ls_message       TYPE ty_message_response.
     lv_method = mo_request->get_uri_attribute( iv_name = 'METH' ).
     CONDENSE lv_method.
     TRANSLATE lv_method TO UPPER CASE.
@@ -220,9 +224,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       lo_response = mo_response->create_entity( ).
       lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
       IF lo_trm_exception IS BOUND.
-        ls_message = lo_trm_exception->message.
+        ls_message-message = lo_trm_exception->message.
+        ls_message-log = lo_trm_exception->log( ).
       ELSE.
-        MOVE-CORRESPONDING sy TO ls_message.
+        MOVE-CORRESPONDING sy TO ls_message-message.
       ENDIF.
       lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_message pretty_name = /ui2/cl_json=>pretty_mode-low_case ) ).
     ENDIF.
