@@ -159,6 +159,10 @@ CLASS zcl_trm_rest_resource DEFINITION
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
+
+    METHODS get_existing_objs_bulk
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string.
 ENDCLASS.
 
 
@@ -1198,6 +1202,34 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
 
     ls_response-tadir = zcl_trm_rest_bulk=>get_transport_objs( iv_trkorr = ls_request-trkorr ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD get_existing_objs_bulk.
+    TYPES: BEGIN OF ty_request,
+             objects TYPE zcl_trm_rest_bulk=>tyt_tadir,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             tadir TYPE zcl_trm_rest_bulk=>tyt_tadir,
+           END OF ty_response.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    ls_response-tadir = zcl_trm_rest_bulk=>get_existing_objs( it_tadir = ls_request-objects ).
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
