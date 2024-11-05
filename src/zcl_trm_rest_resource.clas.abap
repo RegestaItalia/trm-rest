@@ -155,11 +155,14 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
+    METHODS add_namespace
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
 
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
-
     METHODS get_existing_objs_bulk
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
@@ -1177,6 +1180,32 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       EXPORTING
         iv_file_path = lv_file_path
         iv_file      = lv_file
+    ).
+  ENDMETHOD.
+
+  METHOD add_namespace.
+    TYPES: BEGIN OF ty_request,
+             namespace  TYPE namespace,
+             replicense TYPE trnlicense,
+             texts      TYPE zcl_trm_utility=>tyt_trnspacett,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    zcl_trm_utility=>add_namespace(
+      EXPORTING
+        iv_namespace  = ls_request-namespace
+        iv_replicense = ls_request-replicense
+        it_texts      = ls_request-texts
     ).
   ENDMETHOD.
 
