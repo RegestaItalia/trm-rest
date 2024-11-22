@@ -1080,6 +1080,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              devclass    TYPE devclass,
              parentcl    TYPE devclass,
              rm_parentcl TYPE flag,
+             devlayer    TYPE devlayer,
            END OF ty_request.
     DATA: lo_package      TYPE REF TO zcl_trm_package,
           lv_request_json TYPE string,
@@ -1099,6 +1100,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       EXPORTING
         iv_parentcl    = ls_request-parentcl
         iv_rm_parentcl = ls_request-rm_parentcl
+        iv_devlayer    = ls_request-devlayer
     ).
   ENDMETHOD.
 
