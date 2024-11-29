@@ -5,6 +5,7 @@
    <MASTER_LANGUAGE>E</MASTER_LANGUAGE>
    <STARTING_FOLDER>/src/</STARTING_FOLDER>
    <FOLDER_LOGIC>PREFIX</FOLDER_LOGIC>
+   <VERSION_CONSTANT>zif_trm_rest=&gt;version</VERSION_CONSTANT>
   </DATA>
  </asx:values>
 </asx:abap>
