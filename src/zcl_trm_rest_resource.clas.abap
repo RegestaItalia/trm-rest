@@ -1133,7 +1133,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD version.
     TYPES: BEGIN OF ty_response,
-             version TYPE string,
+             server_version TYPE string,
+             rest_version   TYPE string,
            END OF ty_response.
     DATA: ls_response TYPE ty_response,
           lo_response TYPE REF TO if_rest_entity.
@@ -1143,7 +1144,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    ls_response-version = zif_trm=>version.
+    ls_response-server_version = zif_trm=>version.
+    ls_response-rest_version = zif_trm_rest=>version.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
