@@ -7,3 +7,9 @@ Legend
 ! : changed
 + : added
 - : removed
+
+2025-02-26 v2.0.0
+-------------------
+
++ add remove tr comments method
++ add tr migration methods
