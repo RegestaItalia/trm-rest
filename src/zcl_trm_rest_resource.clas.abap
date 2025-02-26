@@ -304,6 +304,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
         fields      = ls_request-fields
         data        = lt_data
       EXCEPTIONS
+        table_without_data = 0
         OTHERS      = 1.
     IF sy-subrc <> 0.
       ev_status = cl_rest_status_code=>gc_server_error_internal.
