@@ -163,6 +163,10 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
+    METHODS remove_tr_comments
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
     METHODS migrate_transport
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -1341,7 +1345,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   METHOD delete_tms_transport.
     TYPES: BEGIN OF ty_request,
              trkorr TYPE trkorr,
-             system type tmssysnam,
+             system TYPE tmssysnam,
            END OF ty_request.
     DATA: lo_transport    TYPE REF TO zcl_trm_transport,
           lv_request_json TYPE string,
@@ -1379,6 +1383,28 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
     lo_transport->refresh_tms_txt( ).
+  ENDMETHOD.
+
+  METHOD remove_tr_comments.
+    TYPES: BEGIN OF ty_request,
+             trkorr TYPE trkorr,
+             object TYPE trobjtype,
+           END OF ty_request.
+    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_delete.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    lo_transport->remove_comments( iv_object = ls_request-object ).
   ENDMETHOD.
 
 ENDCLASS.
