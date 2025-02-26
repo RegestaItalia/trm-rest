@@ -14,3 +14,4 @@ Legend
 + add remove tr comments method
 + add tr migration methods
 * read table -> ignore table no data error
++ add remove from skipped trkorr method

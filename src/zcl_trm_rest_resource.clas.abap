@@ -47,6 +47,10 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
+    METHODS remove_skip_trkorr
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
     METHODS add_src_trkorr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -465,6 +469,28 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
 
     zcl_trm_utility=>add_skip_trkorr(
+      EXPORTING
+        iv_trkorr = ls_request-trkorr
+    ).
+  ENDMETHOD.
+
+  METHOD remove_skip_trkorr.
+    TYPES: BEGIN OF ty_request,
+             trkorr TYPE trkorr,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_delete.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    zcl_trm_utility=>remove_skip_trkorr(
       EXPORTING
         iv_trkorr = ls_request-trkorr
     ).
