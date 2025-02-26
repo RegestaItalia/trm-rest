@@ -183,6 +183,10 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
+    METHODS get_dot_abapgit
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
 
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
@@ -301,15 +305,15 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     CALL FUNCTION 'RFC_READ_TABLE' DESTINATION lv_destination
       EXPORTING
-        query_table = ls_request-query_table
-        delimiter   = ls_request-delimiter
+        query_table        = ls_request-query_table
+        delimiter          = ls_request-delimiter
       TABLES
-        options     = ls_request-options
-        fields      = ls_request-fields
-        data        = lt_data
+        options            = ls_request-options
+        fields             = ls_request-fields
+        data               = lt_data
       EXCEPTIONS
         table_without_data = 0
-        OTHERS      = 1.
+        OTHERS             = 1.
     IF sy-subrc <> 0.
       ev_status = cl_rest_status_code=>gc_server_error_internal.
     ELSE.
@@ -1432,6 +1436,34 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
     lo_transport->remove_comments( iv_object = ls_request-object ).
+  ENDMETHOD.
+
+  METHOD get_dot_abapgit.
+    TYPES: BEGIN OF ty_request,
+             devclass TYPE devclass,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          lv_response     TYPE xstring,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    lv_response = zcl_trm_abapgit=>get_dot_abapgit(
+      EXPORTING
+        iv_devclass    = ls_request-devclass
+    ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_octet_stream ).
+    lo_response->set_binary_data( lv_response ).
   ENDMETHOD.
 
 ENDCLASS.
