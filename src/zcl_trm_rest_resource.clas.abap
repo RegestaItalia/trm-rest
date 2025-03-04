@@ -1466,7 +1466,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ).
 
     lo_response = mo_response->create_entity( ).
-    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_octet_stream ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_xml ).
     lo_response->set_binary_data( lv_response ).
   ENDMETHOD.
 
@@ -1505,13 +1505,13 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     lo_objects = lo_response->create_entity( ).
     lo_zip->set_header_field(
       iv_name  = if_http_header_fields=>content_disposition
-      iv_value = 'form-data; name="zip"; filename="export.zip"'
+      iv_value = 'attachment; name="zip"; filename="export.zip"'
     ).
-    lo_zip->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_octet_stream ).
+    lo_zip->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_zip ).
     lo_zip->set_binary_data( lv_zip ).
     lo_objects->set_header_field(
       iv_name  = if_http_header_fields=>content_disposition
-      iv_value = 'form-data; name="objects"'
+      iv_value = 'attachment; name="objects"'
     ).
     lo_objects->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
     lo_objects->set_string_data( /ui2/cl_json=>serialize( data = lt_objects pretty_name = 'X' ) ).
