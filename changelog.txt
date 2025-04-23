@@ -16,3 +16,4 @@ Legend
 * read table -> ignore table no data error
 + add remove from skipped trkorr method
 + add abapgit integration methods
++ add post activity method
