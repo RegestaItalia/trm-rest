@@ -191,6 +191,10 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
+    METHODS execute_post_activity
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
 
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
@@ -1515,6 +1519,30 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ).
     lo_objects->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
     lo_objects->set_string_data( /ui2/cl_json=>serialize( data = lt_objects pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD execute_post_activity.
+    TYPES: BEGIN OF ty_response,
+             messages TYPE symsg_tab,
+           END OF ty_response.
+    DATA: ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    zcl_trm_utility=>execute_post_activity(
+        EXPORTING
+          iv_data     = mo_request->get_entity( )->get_binary_data( )
+        IMPORTING
+          et_messages = ls_response-messages
+      ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 
 ENDCLASS.
