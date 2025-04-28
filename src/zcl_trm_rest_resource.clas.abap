@@ -47,6 +47,10 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
+    METHODS remove_skip_trkorr
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
     METHODS add_src_trkorr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -163,6 +167,10 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
+    METHODS remove_tr_comments
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
     METHODS migrate_transport
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -172,6 +180,18 @@ CLASS zcl_trm_rest_resource DEFINITION
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
     METHODS refresh_tms_transport_txt
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
+    METHODS get_dot_abapgit
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
+    METHODS get_abapgit_source
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
+    METHODS execute_post_activity
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
@@ -293,20 +313,24 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     CALL FUNCTION 'RFC_READ_TABLE' DESTINATION lv_destination
       EXPORTING
-        query_table = ls_request-query_table
-        delimiter   = ls_request-delimiter
+        query_table        = ls_request-query_table
+        delimiter          = ls_request-delimiter
       TABLES
-        options     = ls_request-options
-        fields      = ls_request-fields
-        data        = lt_data
+        options            = ls_request-options
+        fields             = ls_request-fields
+        data               = lt_data
       EXCEPTIONS
-        OTHERS      = 1.
-    IF sy-subrc <> 0.
-      ev_status = cl_rest_status_code=>gc_server_error_internal.
-    ELSE.
+        table_without_data = 1
+        OTHERS             = 2.
+    IF sy-subrc EQ 0.
       lo_response = mo_response->create_entity( ).
       lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
       lo_response->set_string_data( /ui2/cl_json=>serialize( data = lt_data pretty_name = 'X' ) ).
+    ELSEIF sy-subrc EQ 1.
+      ev_status = cl_rest_status_code=>gc_server_error_internal.
+      ev_reason = 'TABLE_WITHOUT_DATA'.
+    ELSE.
+      ev_status = cl_rest_status_code=>gc_server_error_internal.
     ENDIF.
   ENDMETHOD.
 
@@ -460,6 +484,28 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
 
     zcl_trm_utility=>add_skip_trkorr(
+      EXPORTING
+        iv_trkorr = ls_request-trkorr
+    ).
+  ENDMETHOD.
+
+  METHOD remove_skip_trkorr.
+    TYPES: BEGIN OF ty_request,
+             trkorr TYPE trkorr,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_delete.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    zcl_trm_utility=>remove_skip_trkorr(
       EXPORTING
         iv_trkorr = ls_request-trkorr
     ).
@@ -1341,7 +1387,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   METHOD delete_tms_transport.
     TYPES: BEGIN OF ty_request,
              trkorr TYPE trkorr,
-             system type tmssysnam,
+             system TYPE tmssysnam,
            END OF ty_request.
     DATA: lo_transport    TYPE REF TO zcl_trm_transport,
           lv_request_json TYPE string,
@@ -1379,6 +1425,127 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
     lo_transport->refresh_tms_txt( ).
+  ENDMETHOD.
+
+  METHOD remove_tr_comments.
+    TYPES: BEGIN OF ty_request,
+             trkorr TYPE trkorr,
+             object TYPE trobjtype,
+           END OF ty_request.
+    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_delete.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    lo_transport->remove_comments( iv_object = ls_request-object ).
+  ENDMETHOD.
+
+  METHOD get_dot_abapgit.
+    TYPES: BEGIN OF ty_request,
+             devclass TYPE devclass,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          lv_response     TYPE xstring,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    lv_response = zcl_trm_abapgit=>get_dot_abapgit(
+      EXPORTING
+        iv_devclass    = ls_request-devclass
+    ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_xml ).
+    lo_response->set_binary_data( lv_response ).
+  ENDMETHOD.
+
+  METHOD get_abapgit_source.
+    TYPES: BEGIN OF ty_request,
+             devclass TYPE devclass,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          lv_zip          TYPE xstring,
+          lt_objects      TYPE zcl_trm_abapgit=>tyt_tadir,
+          lo_response     TYPE REF TO if_rest_multipart_entity,
+          lo_zip          TYPE REF TO if_rest_entity,
+          lo_objects      TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    zcl_trm_abapgit=>serialize(
+      EXPORTING
+        iv_devclass = ls_request-devclass
+      IMPORTING
+        ev_zip      = lv_zip
+        et_objects  = lt_objects
+    ).
+
+    lo_response ?= mo_response->create_entity( iv_multipart = 'X' ).
+    lo_response->set_content_type( if_rest_media_type=>gc_multipart_mixed ).
+    lo_zip = lo_response->create_entity( ).
+    lo_objects = lo_response->create_entity( ).
+    lo_zip->set_header_field(
+      iv_name  = if_http_header_fields=>content_disposition
+      iv_value = 'attachment; name="zip"; filename="export.zip"'
+    ).
+    lo_zip->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_zip ).
+    lo_zip->set_binary_data( lv_zip ).
+    lo_objects->set_header_field(
+      iv_name  = if_http_header_fields=>content_disposition
+      iv_value = 'attachment; name="objects"'
+    ).
+    lo_objects->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_objects->set_string_data( /ui2/cl_json=>serialize( data = lt_objects pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD execute_post_activity.
+    TYPES: BEGIN OF ty_response,
+             messages TYPE symsg_tab,
+           END OF ty_response.
+    DATA: ls_response TYPE ty_response,
+          lo_response TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    zcl_trm_utility=>execute_post_activity(
+        EXPORTING
+          iv_data     = mo_request->get_entity( )->get_binary_data( )
+        IMPORTING
+          et_messages = ls_response-messages
+      ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 
 ENDCLASS.

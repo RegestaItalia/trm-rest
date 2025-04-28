@@ -1,0 +1,19 @@
+trm-rest changelog
+=================
+
+Legend
+------
+* : fixed
+! : changed
++ : added
+- : removed
+
+2025-02-26 v2.0.0
+-------------------
+
++ add remove tr comments method
++ add tr migration methods
+* read table -> ignore table no data error
++ add remove from skipped trkorr method
++ add abapgit integration methods
++ add post activity method
