@@ -272,6 +272,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       ELSE.
         MOVE-CORRESPONDING sy TO ls_message_response-message.
       ENDIF.
+      IF ls_message_response-message IS INITIAL.
+        cl_message_helper=>set_msg_vars_for_clike( cl_rest_status_code=>get_reason_phrase( iv_code = lv_status ) ).
+        MOVE-CORRESPONDING sy TO ls_message_response-message.
+      ENDIF.
       lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_message_response pretty_name = 'X' ) ).
     ENDIF.
     mo_response->set_status( lv_status ).

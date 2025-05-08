@@ -8,6 +8,11 @@ Legend
 + : added
 - : removed
 
+2025-02-26 v2.0.1
+-------------------
+
++ add default error when no message provided
+
 2025-02-26 v2.0.0
 -------------------
 
