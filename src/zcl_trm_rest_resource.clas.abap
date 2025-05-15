@@ -272,10 +272,6 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       ELSE.
         MOVE-CORRESPONDING sy TO ls_message_response-message.
       ENDIF.
-      IF ls_message_response-message IS INITIAL.
-        cl_message_helper=>set_msg_vars_for_clike( cl_rest_status_code=>get_reason_phrase( iv_code = lv_status ) ).
-        MOVE-CORRESPONDING sy TO ls_message_response-message.
-      ENDIF.
       lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_message_response pretty_name = 'X' ) ).
     ENDIF.
     mo_response->set_status( lv_status ).
@@ -1225,20 +1221,17 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     DATA(lo_entity) = NEW cl_rest_multipart_form_data( mo_request->get_entity( ) ).
-    lv_file_path = lo_entity->get_form_field( 'file_path' ).
-    IF lv_file_path IS INITIAL.
-      lo_entity->get_file(
-        EXPORTING
-          iv_name = 'file_path'
-        IMPORTING
-          ev_data = lv_xfile_path
-      ).
-      lv_file_path = cl_bcs_convert=>xstring_to_string(
-        EXPORTING
-          iv_xstr   = lv_xfile_path
-          iv_cp     = 1100
-      ).
-    ENDIF.
+    lo_entity->get_file(
+      EXPORTING
+        iv_name = 'file_path'
+      IMPORTING
+        ev_data = lv_xfile_path
+    ).
+    lv_file_path = cl_bcs_convert=>xstring_to_string(
+      EXPORTING
+        iv_xstr   = lv_xfile_path
+        iv_cp     = 1100
+    ).
     lo_entity->get_file(
       EXPORTING
         iv_name = 'file'
@@ -1488,7 +1481,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           lv_zip          TYPE xstring,
-          lt_objects      TYPE zcl_trm_abapgit=>tyt_tadir,
+          lt_objects      TYPE zcl_trm_abapgit=>tyt_ser_objs,
           lo_response     TYPE REF TO if_rest_multipart_entity,
           lo_zip          TYPE REF TO if_rest_entity,
           lo_objects      TYPE REF TO if_rest_entity.
@@ -1531,21 +1524,54 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   METHOD execute_post_activity.
     TYPES: BEGIN OF ty_response,
              messages TYPE symsg_tab,
+             execute  TYPE flag,
            END OF ty_response.
-    DATA: ls_response TYPE ty_response,
-          lo_response TYPE REF TO if_rest_entity.
+    DATA: lv_xpre         TYPE xstring,
+          lv_pre          TYPE flag,
+          lv_data         TYPE xstring,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
       RETURN.
     ENDIF.
 
-    zcl_trm_utility=>execute_post_activity(
+    DATA(lo_entity) = NEW cl_rest_multipart_form_data( mo_request->get_entity( ) ).
+    lo_entity->get_file(
+      EXPORTING
+        iv_name = 'pre'
+      IMPORTING
+        ev_data = lv_xpre
+    ).
+    lv_pre = cl_bcs_convert=>xstring_to_string(
+      EXPORTING
+        iv_xstr   = lv_xpre
+        iv_cp     = 1100
+    ).
+    lo_entity->get_file(
+      EXPORTING
+        iv_name = 'data'
+      IMPORTING
+        ev_data = lv_data
+    ).
+
+    IF lv_pre EQ 'X'.
+      zcl_trm_post_activity=>pre(
         EXPORTING
-          iv_data     = mo_request->get_entity( )->get_binary_data( )
+          iv_data     = lv_data
+        IMPORTING
+          et_messages = ls_response-messages
+          ev_execute  = ls_response-execute
+      ).
+    ELSE.
+      zcl_trm_post_activity=>execute(
+        EXPORTING
+          iv_data     = lv_data
         IMPORTING
           et_messages = ls_response-messages
       ).
+    ENDIF.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
