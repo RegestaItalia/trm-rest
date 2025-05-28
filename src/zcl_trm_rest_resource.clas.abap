@@ -34,6 +34,9 @@ CLASS zcl_trm_rest_resource DEFINITION
     METHODS get_dest
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
+    METHODS check_auth
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string.
 
     METHODS add_lang_tr
       EXPORTING ev_status TYPE i
@@ -195,10 +198,6 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
-    METHODS regen_prog
-      EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   zcx_trm_exception.
     METHODS get_installed_packages
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -238,7 +237,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD handle_request.
-    DATA: lv_method           TYPE seocpdname,
+    DATA: lv_destination      TYPE rfcdest,
+          lv_method           TYPE seocpdname,
           lv_status           TYPE i,
           lv_reason           TYPE string,
           lo_trm_exception    TYPE REF TO zcx_trm_exception,
@@ -247,8 +247,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     lv_method = mo_request->get_uri_attribute( iv_name = 'METH' ).
     CONDENSE lv_method.
     TRANSLATE lv_method TO UPPER CASE.
+    lv_destination = get_request_rfcdest( ).
     IF lv_method <> 'VERSION'.
-      CALL FUNCTION 'ZTRM_CHECK_AUTH'
+      CALL FUNCTION 'ZTRM_CHECK_AUTH' DESTINATION lv_destination
         EXCEPTIONS
           trm_rfc_unauthorized = 1.
     ENDIF.
@@ -412,6 +413,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
       lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
     ENDIF.
+  ENDMETHOD.
+
+  METHOD check_auth.
+
   ENDMETHOD.
 
   METHOD add_lang_tr.
@@ -1534,11 +1539,11 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              messages TYPE symsg_tab,
              execute  TYPE flag,
            END OF ty_response.
-    DATA: lv_xpre         TYPE xstring,
-          lv_pre          TYPE flag,
-          lv_data         TYPE xstring,
-          ls_response     TYPE ty_response,
-          lo_response     TYPE REF TO if_rest_entity.
+    DATA: lv_xpre     TYPE xstring,
+          lv_pre      TYPE flag,
+          lv_data     TYPE xstring,
+          ls_response TYPE ty_response,
+          lo_response TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
@@ -1586,32 +1591,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 
-  METHOD regen_prog.
-    TYPES: BEGIN OF ty_request,
-             progname TYPE progname,
-           END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
-          lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
-
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
-
-    lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
-
-
-    zcl_trm_utility=>regen_program( iv_progname = ls_request-progname ).
-  ENDMETHOD.
-
   METHOD get_installed_packages.
     TYPES: BEGIN OF ty_response,
              packages TYPE zcl_trm_core=>tyt_trm_package,
            END OF ty_response.
-    DATA: ls_response     TYPE ty_response,
-          lo_response     TYPE REF TO if_rest_entity.
+    DATA: ls_response TYPE ty_response,
+          lo_response TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
