@@ -237,8 +237,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD handle_request.
-    DATA: lv_destination      TYPE rfcdest,
-          lv_method           TYPE seocpdname,
+    DATA: lv_method           TYPE seocpdname,
           lv_status           TYPE i,
           lv_reason           TYPE string,
           lo_trm_exception    TYPE REF TO zcx_trm_exception,
@@ -247,9 +246,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     lv_method = mo_request->get_uri_attribute( iv_name = 'METH' ).
     CONDENSE lv_method.
     TRANSLATE lv_method TO UPPER CASE.
-    lv_destination = get_request_rfcdest( ).
     IF lv_method <> 'VERSION'.
-      CALL FUNCTION 'ZTRM_CHECK_AUTH' DESTINATION lv_destination
+      CALL FUNCTION 'ZTRM_CHECK_AUTH'
         EXCEPTIONS
           trm_rfc_unauthorized = 1.
       lv_reason = 'TRM_RFC_UNAUTHORIZED'.
