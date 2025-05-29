@@ -252,6 +252,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       CALL FUNCTION 'ZTRM_CHECK_AUTH' DESTINATION lv_destination
         EXCEPTIONS
           trm_rfc_unauthorized = 1.
+      lv_reason = 'TRM_RFC_UNAUTHORIZED'.
     ENDIF.
     IF sy-subrc <> 0.
       lv_status = cl_rest_status_code=>gc_client_error_unauthorized.
@@ -269,7 +270,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
           lv_reason = lo_trm_exception->reason( ).
         CATCH cx_root.
           lv_status = cl_rest_status_code=>gc_server_error_internal.
-          lv_reason = 'Method call exception'.
+          lv_reason = 'METHOD_CALL_EXCEPTION'.
       ENDTRY.
     ENDIF.
     IF lv_status <> cl_rest_status_code=>gc_success_ok.
@@ -416,7 +417,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_auth.
-
+    "dummy method
+    ev_status = cl_rest_status_code=>gc_success_ok.
   ENDMETHOD.
 
   METHOD add_lang_tr.
@@ -469,10 +471,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
     lo_transport->add_objects(
       EXPORTING
-        iv_lock   = ls_request-lock
-        it_e071   = ls_request-e071
+        iv_lock = ls_request-lock
+        it_e071 = ls_request-e071
       IMPORTING
-        et_log    = ls_response-log
+        et_log  = ls_response-log
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -571,8 +573,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     zcl_trm_transport=>create_workbench(
       EXPORTING
-        iv_text   = ls_request-text
-        iv_target = ls_request-target
+        iv_text      = ls_request-text
+        iv_target    = ls_request-target
       RECEIVING
         ro_transport = lo_transport
     ).
@@ -627,8 +629,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     zcl_trm_transport=>create_transport_of_copies(
       EXPORTING
-        iv_text   = ls_request-text
-        iv_target = ls_request-target
+        iv_text      = ls_request-text
+        iv_target    = ls_request-target
       RECEIVING
         ro_transport = lo_transport
     ).
@@ -765,7 +767,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     CREATE OBJECT lo_package EXPORTING iv_devclass = ls_request-devclass.
     lo_package->get_objects(
       IMPORTING
-        et_tadir    = ls_response-tadir
+        et_tadir = ls_response-tadir
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -845,9 +847,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     zcl_trm_transport=>find_object_lock(
       EXPORTING
-        iv_pgmid    = ls_request-pgmid
-        iv_object   = ls_request-object
-        iv_obj_name = ls_request-obj_name
+        iv_pgmid     = ls_request-pgmid
+        iv_object    = ls_request-object
+        iv_obj_name  = ls_request-obj_name
       RECEIVING
         ro_transport = lo_transport
     ).
@@ -1108,7 +1110,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
     lo_transport->set_documentation(
       EXPORTING
-        it_doc    = ls_request-doc
+        it_doc = ls_request-doc
     ).
   ENDMETHOD.
 
@@ -1242,8 +1244,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ).
     lv_file_path = cl_bcs_convert=>xstring_to_string(
       EXPORTING
-        iv_xstr   = lv_xfile_path
-        iv_cp     = 1100
+        iv_xstr = lv_xfile_path
+        iv_cp   = 1100
     ).
     lo_entity->get_file(
       EXPORTING
@@ -1479,7 +1481,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     lv_response = zcl_trm_abapgit=>get_dot_abapgit(
       EXPORTING
-        iv_devclass    = ls_request-devclass
+        iv_devclass = ls_request-devclass
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -1559,8 +1561,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ).
     lv_pre = cl_bcs_convert=>xstring_to_string(
       EXPORTING
-        iv_xstr   = lv_xpre
-        iv_cp     = 1100
+        iv_xstr = lv_xpre
+        iv_cp   = 1100
     ).
     lo_entity->get_file(
       EXPORTING
