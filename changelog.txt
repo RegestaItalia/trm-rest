@@ -8,6 +8,13 @@ Legend
 + : added
 - : removed
 
+
+2025-05-29 v2.3.0
+-------------------
+
+! trm-server ^3.1.0
+* fix no auth message
+
 2025-02-26 v2.2.0
 -------------------
 
