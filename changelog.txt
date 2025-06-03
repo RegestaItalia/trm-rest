@@ -9,6 +9,13 @@ Legend
 - : removed
 
 
+2025-06-03 v2.4.0
+-------------------
+
+! trm-server ^4.0.0
+! installed packages list from singleton
++ tr change owner api
+
 2025-05-29 v2.3.0
 -------------------
 
