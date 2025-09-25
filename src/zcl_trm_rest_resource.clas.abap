@@ -320,7 +320,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
     lv_destination = get_request_rfcdest( ).
 
     CALL FUNCTION 'RFC_READ_TABLE' DESTINATION lv_destination
@@ -366,7 +366,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
     lv_destination = get_request_rfcdest( ).
 
     CALL FUNCTION 'REPOSITORY_ENVIRONMENT_RFC' DESTINATION lv_destination
@@ -438,7 +438,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
     lo_transport->add_translations(
@@ -468,7 +468,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
     lo_transport->add_objects(
@@ -497,7 +497,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_utility=>add_skip_trkorr(
@@ -519,7 +519,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_utility=>remove_skip_trkorr(
@@ -541,7 +541,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_utility=>add_source_trkorr(
@@ -570,7 +570,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_transport=>create_workbench(
@@ -597,7 +597,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_package=>create(
@@ -626,7 +626,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_transport=>create_transport_of_copies(
@@ -657,7 +657,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -678,7 +678,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -702,7 +702,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -729,7 +729,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_utility=>get_binary_file(
@@ -763,7 +763,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_package EXPORTING iv_devclass = ls_request-devclass.
@@ -844,7 +844,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_transport=>find_object_lock(
@@ -900,7 +900,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -971,7 +971,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_transport=>read_queue(
@@ -1006,7 +1006,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -1037,7 +1037,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -1060,7 +1060,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_utility=>add_install_devclass(
@@ -1082,7 +1082,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_utility=>add_package_integrity(
@@ -1106,7 +1106,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -1135,7 +1135,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_utility=>tadir_interface(
@@ -1167,7 +1167,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_package EXPORTING iv_devclass = ls_request-devclass.
@@ -1195,7 +1195,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-to.
@@ -1278,7 +1278,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_utility=>add_namespace(
@@ -1307,7 +1307,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     ls_response-tadir = zcl_trm_rest_bulk=>get_transport_objs( iv_trkorr = ls_request-trkorr ).
@@ -1335,7 +1335,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     ls_response-tadir = zcl_trm_rest_bulk=>get_existing_objs( it_tadir = ls_request-objects ).
@@ -1384,7 +1384,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -1413,7 +1413,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -1434,7 +1434,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -1456,7 +1456,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
@@ -1478,7 +1478,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     lv_response = zcl_trm_abapgit=>get_dot_abapgit(
@@ -1509,7 +1509,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     zcl_trm_abapgit=>serialize(
@@ -1629,7 +1629,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
     lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json pretty_name = 'X' CHANGING data = ls_request ).
 
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
