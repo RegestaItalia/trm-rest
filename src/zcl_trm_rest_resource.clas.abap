@@ -206,6 +206,14 @@ CLASS zcl_trm_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   zcx_trm_exception.
+    METHODS get_package_dependencies
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
+    METHODS get_object_dependencies
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   zcx_trm_exception.
 
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
@@ -1634,6 +1642,74 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
     CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
     lo_transport->set_owner( iv_user = ls_request-new_owner ).
+  ENDMETHOD.
+
+  METHOD get_object_dependencies.
+    TYPES: BEGIN OF ty_request,
+             devclass type devclass,
+             incl_sub  TYPE flag,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             dependencies TYPE ztrm_object_dependencies_t,
+           END OF ty_response.
+    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    ls_response-dependencies = zcl_trm_object_dispacher=>get_package_dependencies(
+        EXPORTING
+          package      = ls_request-devclass
+          incl_sub     = ls_request-incl_sub
+      ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD get_package_dependencies.
+    TYPES: BEGIN OF ty_request,
+             object TYPE ztrm_object,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             dependencies TYPE ztrm_object_dependency_t,
+           END OF ty_response.
+    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    zcl_trm_object_dispacher=>get(
+        key = ls_request-object
+      )->get_dependencies(
+        IMPORTING
+          et_dependencies = ls_response-dependencies
+      ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 
 ENDCLASS.
