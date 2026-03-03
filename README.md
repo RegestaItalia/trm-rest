@@ -1,9 +1,9 @@
 # <a href="https://docs.trmregistry.com/#/server/README"><img src="https://docs.trmregistry.com/_media/logo.png" height="40" alt="TRM"></a>
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-1.3.0-4baaaa.svg)](https://github.com/RegestaItalia/trm-docs/blob/main/CODE_OF_CONDUCT.md)
-[![TRM License](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/license/trm-rest)](https://trmregistry.com/#/package/trm-rest)
-[![TRM Latest version](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/version/trm-rest)](https://trmregistry.com/#/package/trm-rest)
-[![TRM Installs](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/downloads/trm-rest)](https://trmregistry.com/#/package/trm-rest)
+[![TRM License](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/license/trm-rest)](https://trmregistry.com/package/trm-rest)
+[![TRM Latest version](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/version/trm-rest)](https://trmregistry.com/package/trm-rest)
+[![TRM Installs](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/downloads/trm-rest)](https://trmregistry.com/package/trm-rest)
 
 | 🚀 This project is funded and maintained by 🏦 | 🔗                                                             |
 |-------------------------------------------------|----------------------------------------------------------------|
