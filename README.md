@@ -10,12 +10,21 @@
 | Regesta S.p.A.                                  | [https://www.regestaitalia.eu/](https://www.regestaitalia.eu/) |
 | Clarex S.r.l.                                   | [https://www.clarex.it/](https://www.clarex.it/)               |
 
-**trm-rest** is the REST wrapper of [trm-server](https://trmregistry.com/package/trm-server).
+[trm-rest](https://trmregistry.com/package/trm-rest) is the REST wrapper of the server-side component of TRM.
 
-It acts as a lightweight HTTP layer on top of **trm-server**, exposing the same APIs via REST (instead of RFC).
+🚚 **TRM (Transport Request Manager)** is a package manager inspired solution built leveraging CTS that simplifies SAP ABAP transports.
+
+<p align="center">
+  <img src="https://docs.trmregistry.com/logo.png" alt="TRM Logo" />
+</p>
+
+TRM introduces **package-based software delivery** to the SAP ecosystem, bringing with it semantic versioning, dependency management, and automated deployment activities.
 
 # Architecture Overview
 
+It acts as a lightweight HTTP layer on top of **trm-server**, exposing the same APIs via REST (instead of RFC).
+
+```
                   ┌──────────────────────────┐
                   │        TRM Client        │
                   └─────────────┬────────────┘
@@ -39,6 +48,12 @@ It acts as a lightweight HTTP layer on top of **trm-server**, exposing the same 
                   ┌──────────────────────────┐
                   │        SAP System        │
                   └──────────────────────────┘
+```
+
+
+# Documentation
+
+Full documentation can be seen at [https://docs.trmregistry.com](https://docs.trmregistry.com).
 
 # Install
 
@@ -52,13 +67,7 @@ In a typical scenario, TRM Client connects to a SAP system through a **System Co
 After checking that **trm-server** is installed on the system, the client uses its APIs to perform secure and controlled transport export and import operations.  
 If not installed, the client can still communicate directly with the SAP system, but with limited capabilities and without extended TRM features.
 
-# Documentation <!-- {docsify-remove} -->
-
-Full documentation can be seen at [https://docs.trmregistry.com](https://docs.trmregistry.com).
-
-To install **trm-server** on your system, [follow the this guide](/docs/setup.md).
-
-# Contributing <!-- {docsify-remove} -->
+# Contributing
 
 Like every other TRM open-soruce projects, contributions are always welcomed ❤️.
 
