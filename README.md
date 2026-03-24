@@ -4,6 +4,7 @@
 [![TRM License](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/license/trm-rest)](https://trmregistry.com/package/trm-rest)
 [![TRM Latest version](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/version/trm-rest)](https://trmregistry.com/package/trm-rest)
 [![TRM Installs](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/downloads/trm-rest)](https://trmregistry.com/package/trm-rest)
+[![View Code Wiki](https://assets.codewiki.google/readme-badge/static.svg)](https://codewiki.google/github.com/regestaitalia/trm-docs)
 
 | 🚀 This project is funded and maintained by 🏦 | 🔗                                                             |
 |-------------------------------------------------|----------------------------------------------------------------|
