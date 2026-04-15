@@ -1,4 +1,4 @@
-CLASS zcl_trm_rest_handler DEFINITION
+CLASS /atrm/cl_rest_handler DEFINITION
   PUBLIC
   INHERITING FROM cl_rest_http_handler
   FINAL
@@ -13,7 +13,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_trm_rest_handler IMPLEMENTATION.
+CLASS /atrm/cl_rest_handler IMPLEMENTATION.
 
   METHOD if_rest_application~get_root_handler.
     DATA: lo_handler       TYPE REF TO cl_rest_router,
@@ -24,7 +24,7 @@ CLASS zcl_trm_rest_handler IMPLEMENTATION.
     lo_handler->attach(
       EXPORTING
         iv_template      = '/{METH:.*}'
-        iv_handler_class = 'ZCL_TRM_REST_RESOURCE'
+        iv_handler_class = '/ATRM/CL_REST_RESOURCE'
     ).
 
     ro_root_handler = lo_handler.

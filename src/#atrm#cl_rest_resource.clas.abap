@@ -1,4 +1,4 @@
-CLASS zcl_trm_rest_resource DEFINITION
+CLASS /atrm/cl_rest_resource DEFINITION
   PUBLIC
   INHERITING FROM cl_rest_resource
   FINAL
@@ -14,7 +14,7 @@ CLASS zcl_trm_rest_resource DEFINITION
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_message_response,
              message TYPE symsg,
-             log     TYPE zcx_trm_exception=>tyt_log,
+             log     TYPE /atrm/cx_exception=>tyt_log,
            END OF ty_message_response.
     TYPES: tyt_et071 TYPE STANDARD TABLE OF e071 WITH DEFAULT KEY,
            tyt_senvi TYPE STANDARD TABLE OF senvi WITH DEFAULT KEY.
@@ -41,195 +41,171 @@ CLASS zcl_trm_rest_resource DEFINITION
     METHODS add_lang_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS add_objs_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
-    METHODS add_skip_trkorr
-      EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   zcx_trm_exception.
-    METHODS remove_skip_trkorr
-      EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   zcx_trm_exception.
-    METHODS add_src_trkorr
-      EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS create_import_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS create_package
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS create_toc
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS delete_transport
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS dequeue_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS forward_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_binary_file
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_devclass_objs
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_dir_trans
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_file_sys
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
-    METHODS get_obj_lock_tr
-      EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_transport_layer
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS import_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS list_object_types
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS ping
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS read_tms_queue
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS release_tr
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS rename_transport_request
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS set_install_devc
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
-    METHODS set_integrity
-      EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS set_transport_doc
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS tadir_interface
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS tdevc_interface
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS tr_copy
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS version
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS write_binary_file
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS add_namespace
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_r3trans_info
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS remove_tr_comments
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
-    METHODS migrate_transport
-      EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS delete_tms_transport
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS refresh_tms_transport_txt
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_dot_abapgit
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_abapgit_source
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS execute_post_activity
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_installed_packages
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS change_tr_owner
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_package_dependencies
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_object_dependencies
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS create_log_polling
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS delete_log_polling
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS read_log_polling
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
     METHODS get_transport_import_status
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
-      RAISING   zcx_trm_exception.
+      RAISING   /atrm/cx_exception.
 
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
@@ -241,7 +217,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_trm_rest_resource IMPLEMENTATION.
+CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
   METHOD constructor.
     super->constructor( ).
@@ -268,7 +244,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     DATA: lv_method           TYPE seocpdname,
           lv_status           TYPE i,
           lv_reason           TYPE string,
-          lo_trm_exception    TYPE REF TO zcx_trm_exception,
+          lo_trm_exception    TYPE REF TO /atrm/cx_exception,
           lo_response         TYPE REF TO if_rest_entity,
           ls_message_response TYPE ty_message_response.
     lv_method = mo_request->get_uri_attribute( iv_name = 'METH' ).
@@ -291,7 +267,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
           IF lv_status IS INITIAL.
             lv_status = cl_rest_status_code=>gc_success_ok.
           ENDIF.
-        CATCH zcx_trm_exception INTO lo_trm_exception.
+        CATCH /atrm/cx_exception INTO lo_trm_exception.
           lv_status = cl_rest_status_code=>gc_server_error_internal.
           lv_reason = lo_trm_exception->reason( ).
         CATCH cx_root.
@@ -452,7 +428,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              trkorr   TYPE trkorr,
              devclass TYPE lxe_tt_packg,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -464,10 +440,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     lv_request_json = get_request_json( ).
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->add_translations(
       EXPORTING
-        it_devclass = ls_request-devclass
+        devclass = ls_request-devclass
     ).
   ENDMETHOD.
 
@@ -480,7 +456,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            BEGIN OF ty_response,
              log TYPE sprot_u_tab,
            END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -494,84 +470,18 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     lv_request_json = get_request_json( ).
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->add_objects(
       EXPORTING
-        iv_lock = ls_request-lock
-        it_e071 = ls_request-e071
+        lock = ls_request-lock
+        e071 = ls_request-e071
       IMPORTING
-        et_log  = ls_response-log
+        log  = ls_response-log
     ).
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
     lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
-  ENDMETHOD.
-
-  METHOD add_skip_trkorr.
-    TYPES: BEGIN OF ty_request,
-             trkorr TYPE trkorr,
-           END OF ty_request.
-    DATA: lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
-
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
-
-    lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
-
-
-    zcl_trm_utility=>add_skip_trkorr(
-      EXPORTING
-        iv_trkorr = ls_request-trkorr
-    ).
-  ENDMETHOD.
-
-  METHOD remove_skip_trkorr.
-    TYPES: BEGIN OF ty_request,
-             trkorr TYPE trkorr,
-           END OF ty_request.
-    DATA: lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
-
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_delete.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
-
-    lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
-
-
-    zcl_trm_utility=>remove_skip_trkorr(
-      EXPORTING
-        iv_trkorr = ls_request-trkorr
-    ).
-  ENDMETHOD.
-
-  METHOD add_src_trkorr.
-    TYPES: BEGIN OF ty_request,
-             trkorr TYPE trkorr,
-           END OF ty_request.
-    DATA: lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
-
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
-
-    lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
-
-
-    zcl_trm_utility=>add_source_trkorr(
-      EXPORTING
-        iv_trkorr = ls_request-trkorr
-    ).
   ENDMETHOD.
 
   METHOD create_import_tr.
@@ -582,7 +492,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            BEGIN OF ty_response,
              trkorr TYPE trkorr,
            END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -597,12 +507,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_transport=>create_workbench(
+    /atrm/cl_transport=>create_workbench(
       EXPORTING
-        iv_text      = ls_request-text
-        iv_target    = ls_request-target
+        text      = ls_request-text
+        target    = ls_request-target
       RECEIVING
-        ro_transport = lo_transport
+        transport = lo_transport
     ).
     ls_response-trkorr = lo_transport->get_trkorr( ).
 
@@ -624,9 +534,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_package=>create(
+    /atrm/cl_package=>create(
       EXPORTING
-        is_data = ls_request
+        data = ls_request
     ).
   ENDMETHOD.
 
@@ -638,7 +548,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            BEGIN OF ty_response,
              trkorr TYPE trkorr,
            END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -653,12 +563,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_transport=>create_transport_of_copies(
+    /atrm/cl_transport=>create_transport_of_copies(
       EXPORTING
-        iv_text      = ls_request-text
-        iv_target    = ls_request-target
+        text      = ls_request-text
+        target    = ls_request-target
       RECEIVING
-        ro_transport = lo_transport
+        transport = lo_transport
     ).
     ls_response-trkorr = lo_transport->get_trkorr( ).
 
@@ -671,7 +581,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     TYPES: BEGIN OF ty_request,
              trkorr TYPE trkorr,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -684,7 +594,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->delete( ).
   ENDMETHOD.
 
@@ -692,7 +602,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     TYPES: BEGIN OF ty_request,
              trkorr TYPE trkorr,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -705,7 +615,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->dequeue( ).
   ENDMETHOD.
 
@@ -716,7 +626,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              source       TYPE tmssysnam,
              import_again TYPE flag,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -729,12 +639,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->forward(
       EXPORTING
-        iv_target       = ls_request-target
-        iv_source       = ls_request-source
-        iv_import_again = ls_request-import_again
+        target       = ls_request-target
+        source       = ls_request-source
+        import_again = ls_request-import_again
     ).
   ENDMETHOD.
 
@@ -756,11 +666,11 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_utility=>get_binary_file(
+    /atrm/cl_utilities=>get_binary_file(
       EXPORTING
-        iv_file_path = ls_request-file_path
+        file_path = ls_request-file_path
       IMPORTING
-        ev_file      = lv_response
+        file      = lv_response
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -775,7 +685,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            BEGIN OF ty_response,
              tadir TYPE scts_tadir,
            END OF ty_response.
-    DATA: lo_package      TYPE REF TO zcl_trm_package,
+    DATA: lo_package      TYPE REF TO /atrm/cl_package,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -790,10 +700,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_package EXPORTING iv_devclass = ls_request-devclass.
+    CREATE OBJECT lo_package EXPORTING devclass = ls_request-devclass.
     lo_package->get_objects(
       IMPORTING
-        et_tadir = ls_response-tadir
+        tadir = ls_response-tadir
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -814,9 +724,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
 
-    zcl_trm_utility=>get_dir_trans(
+    /atrm/cl_utilities=>get_dir_trans(
       IMPORTING
-        ev_dir_trans = ls_response-dir_trans
+        dir_trans = ls_response-dir_trans
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -837,49 +747,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
 
-    zcl_trm_utility=>get_file_sys(
+    /atrm/cl_utilities=>get_file_sys(
       IMPORTING
-        ev_file_sys = ls_response-file_sys
+        file_sys = ls_response-file_sys
     ).
-
-    lo_response = mo_response->create_entity( ).
-    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
-  ENDMETHOD.
-
-  METHOD get_obj_lock_tr.
-    TYPES: BEGIN OF ty_request,
-             pgmid    TYPE pgmid,
-             object   TYPE trobjtype,
-             obj_name TYPE trobj_name,
-           END OF ty_request,
-           BEGIN OF ty_response,
-             trkorr TYPE trkorr,
-           END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
-          lv_request_json TYPE string,
-          ls_request      TYPE ty_request,
-          ls_response     TYPE ty_response,
-          lo_response     TYPE REF TO if_rest_entity.
-
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
-
-    lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
-
-
-    zcl_trm_transport=>find_object_lock(
-      EXPORTING
-        iv_pgmid     = ls_request-pgmid
-        iv_object    = ls_request-object
-        iv_obj_name  = ls_request-obj_name
-      RECEIVING
-        ro_transport = lo_transport
-    ).
-    ls_response-trkorr = lo_transport->get_trkorr( ).
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -899,9 +770,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
 
-    zcl_trm_utility=>get_default_transport_layer(
+    /atrm/cl_utilities=>get_default_transport_layer(
       IMPORTING
-        ev_layer = ls_response-layer
+        layer = ls_response-layer
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -914,7 +785,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              trkorr TYPE trkorr,
              system TYPE tmssysnam,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -927,10 +798,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->import(
       EXPORTING
-        iv_system = ls_request-system
+        system = ls_request-system
     ).
   ENDMETHOD.
 
@@ -947,9 +818,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
 
-    zcl_trm_utility=>get_supported_object_types(
+    /atrm/cl_utilities=>get_supported_object_types(
       IMPORTING
-        et_object_text = ls_response-object_text
+        object_text = ls_response-object_text
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -998,11 +869,11 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_transport=>read_queue(
+    /atrm/cl_transport=>read_queue(
       EXPORTING
-        iv_target   = ls_request-target
+        target   = ls_request-target
       IMPORTING
-        et_requests = ls_response-requests
+        requests = ls_response-requests
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -1018,7 +889,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            BEGIN OF ty_response,
              messages TYPE ctsgerrmsgs,
            END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -1033,12 +904,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->release(
       EXPORTING
-        iv_lock     = ls_request-lock
+        lock     = ls_request-lock
       IMPORTING
-        et_messages = ls_response-messages
+        messages = ls_response-messages
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -1051,7 +922,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              trkorr  TYPE trkorr,
              as4text TYPE as4text,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1064,16 +935,16 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->rename(
       EXPORTING
-        iv_as4text = ls_request-as4text
+        as4text = ls_request-as4text
     ).
   ENDMETHOD.
 
   METHOD set_install_devc.
     TYPES: BEGIN OF ty_request,
-             installdevc TYPE zcl_trm_utility=>tyt_installdevc,
+             installdevc TYPE /atrm/cl_utilities=>tyt_installdevc,
            END OF ty_request.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request.
@@ -1087,40 +958,18 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_utility=>add_install_devclass(
+    /atrm/cl_utilities=>add_install_devclass(
       EXPORTING
-        it_installdevc = ls_request-installdevc
-    ).
-  ENDMETHOD.
-
-  METHOD set_integrity.
-    TYPES: BEGIN OF ty_request,
-             integrity TYPE ztrm_integrity,
-           END OF ty_request.
-    DATA: lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
-
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
-
-    lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
-
-
-    zcl_trm_utility=>add_package_integrity(
-      EXPORTING
-        is_integrity = ls_request-integrity
+        installdevc = ls_request-installdevc
     ).
   ENDMETHOD.
 
   METHOD set_transport_doc.
     TYPES: BEGIN OF ty_request,
              trkorr TYPE trkorr,
-             doc    TYPE zcl_trm_transport=>tyt_tline,
+             doc    TYPE /atrm/cl_transport=>tyt_tline,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1133,10 +982,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->set_documentation(
       EXPORTING
-        it_doc = ls_request-doc
+        doc = ls_request-doc
     ).
   ENDMETHOD.
 
@@ -1162,15 +1011,15 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_utility=>tadir_interface(
+    /atrm/cl_utilities=>tadir_interface(
       EXPORTING
-        iv_pgmid     = ls_request-pgmid
-        iv_object    = ls_request-object
-        iv_objname   = ls_request-obj_name
-        iv_devclass  = ls_request-devclass
-        iv_srcsystem = ls_request-srcsystem
-        iv_author    = ls_request-author
-        iv_genflag   = ls_request-set_genflag
+        pgmid     = ls_request-pgmid
+        object    = ls_request-object
+        objname   = ls_request-obj_name
+        devclass  = ls_request-devclass
+        srcsystem = ls_request-srcsystem
+        author    = ls_request-author
+        genflag   = ls_request-set_genflag
     ).
   ENDMETHOD.
 
@@ -1181,7 +1030,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              rm_parentcl TYPE flag,
              devlayer    TYPE devlayer,
            END OF ty_request.
-    DATA: lo_package      TYPE REF TO zcl_trm_package,
+    DATA: lo_package      TYPE REF TO /atrm/cl_package,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1194,12 +1043,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_package EXPORTING iv_devclass = ls_request-devclass.
+    CREATE OBJECT lo_package EXPORTING devclass = ls_request-devclass.
     lo_package->interface(
       EXPORTING
-        iv_parentcl    = ls_request-parentcl
-        iv_rm_parentcl = ls_request-rm_parentcl
-        iv_devlayer    = ls_request-devlayer
+        parentcl    = ls_request-parentcl
+        rm_parentcl = ls_request-rm_parentcl
+        devlayer    = ls_request-devlayer
     ).
   ENDMETHOD.
 
@@ -1209,7 +1058,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              to   TYPE trkorr,
              doc  TYPE trparflag,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1222,11 +1071,11 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-to.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-to.
     lo_transport->copy(
       EXPORTING
-        iv_trkorr = ls_request-from
-        iv_doc    = ls_request-doc
+        trkorr = ls_request-from
+        doc    = ls_request-doc
     ).
   ENDMETHOD.
 
@@ -1243,8 +1092,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    ls_response-server_version = zif_trm=>version.
-    ls_response-rest_version = zif_trm_rest=>version.
+    ls_response-server_version = /atrm/if_server=>version.
+    ls_response-rest_version = /atrm/if_rest=>version.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -1280,10 +1129,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
         ev_data = lv_file
     ).
 
-    zcl_trm_utility=>write_binary_file(
+    /atrm/cl_utilities=>write_binary_file(
       EXPORTING
-        iv_file_path = lv_file_path
-        iv_file      = lv_file
+        file_path = lv_file_path
+        file      = lv_file
     ).
   ENDMETHOD.
 
@@ -1291,7 +1140,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     TYPES: BEGIN OF ty_request,
              namespace  TYPE namespace,
              replicense TYPE trnlicense,
-             texts      TYPE zcl_trm_utility=>tyt_trnspacett,
+             texts      TYPE /atrm/cl_utilities=>tyt_trnspacett,
            END OF ty_request.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request.
@@ -1305,11 +1154,11 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_utility=>add_namespace(
+    /atrm/cl_utilities=>add_namespace(
       EXPORTING
-        iv_namespace  = ls_request-namespace
-        iv_replicense = ls_request-replicense
-        it_texts      = ls_request-texts
+        namespace  = ls_request-namespace
+        replicense = ls_request-replicense
+        texts      = ls_request-texts
     ).
   ENDMETHOD.
 
@@ -1318,7 +1167,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              trkorr TYPE trkorr,
            END OF ty_request,
            BEGIN OF ty_response,
-             tadir TYPE zcl_trm_rest_bulk=>tyt_tadir,
+             tadir TYPE /atrm/cl_rest_bulk=>tyt_tadir,
            END OF ty_response.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request,
@@ -1334,7 +1183,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    ls_response-tadir = zcl_trm_rest_bulk=>get_transport_objs( iv_trkorr = ls_request-trkorr ).
+    ls_response-tadir = /atrm/cl_rest_bulk=>get_transport_objs( iv_trkorr = ls_request-trkorr ).
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -1343,10 +1192,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD get_existing_objs_bulk.
     TYPES: BEGIN OF ty_request,
-             objects TYPE zcl_trm_rest_bulk=>tyt_tadir,
+             objects TYPE /atrm/cl_rest_bulk=>tyt_tadir,
            END OF ty_request,
            BEGIN OF ty_response,
-             tadir TYPE zcl_trm_rest_bulk=>tyt_tadir,
+             tadir TYPE /atrm/cl_rest_bulk=>tyt_tadir,
            END OF ty_response.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request,
@@ -1362,7 +1211,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    ls_response-tadir = zcl_trm_rest_bulk=>get_existing_objs( it_tadir = ls_request-objects ).
+    ls_response-tadir = /atrm/cl_rest_bulk=>get_existing_objs( it_tadir = ls_request-objects ).
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -1382,40 +1231,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ENDIF.
 
 
-    ls_response-log = zcl_trm_utility=>get_r3trans_info( ).
-
-    lo_response = mo_response->create_entity( ).
-    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
-  ENDMETHOD.
-
-  METHOD migrate_transport.
-    TYPES: BEGIN OF ty_request,
-             trkorr TYPE trkorr,
-           END OF ty_request,
-           BEGIN OF ty_response,
-             trm_trkorr TYPE ztrm_trkorr,
-           END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
-          lv_request_json TYPE string,
-          ls_request      TYPE ty_request,
-          ls_response     TYPE ty_response,
-          lo_response     TYPE REF TO if_rest_entity.
-
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
-
-    lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
-
-
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
-    lo_transport->migrate(
-      IMPORTING
-        ev_trm_trkorr = ls_response-trm_trkorr
-    ).
+    ls_response-log = /atrm/cl_utilities=>get_r3trans_info( ).
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -1427,7 +1243,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              trkorr TYPE trkorr,
              system TYPE tmssysnam,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1440,15 +1256,15 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
-    lo_transport->delete_from_tms_queue( iv_system = ls_request-system ).
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
+    lo_transport->delete_from_tms_queue( system = ls_request-system ).
   ENDMETHOD.
 
   METHOD refresh_tms_transport_txt.
     TYPES: BEGIN OF ty_request,
              trkorr TYPE trkorr,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1461,7 +1277,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->refresh_tms_txt( ).
   ENDMETHOD.
 
@@ -1470,7 +1286,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              trkorr TYPE trkorr,
              object TYPE trobjtype,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1483,8 +1299,8 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
-    lo_transport->remove_comments( iv_object = ls_request-object ).
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
+    lo_transport->remove_comments( object = ls_request-object ).
   ENDMETHOD.
 
   METHOD get_dot_abapgit.
@@ -1505,9 +1321,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    lv_response = zcl_trm_abapgit=>get_dot_abapgit(
+    lv_response = /atrm/cl_abapgit=>get_dot_abapgit(
       EXPORTING
-        iv_devclass = ls_request-devclass
+        devclass = ls_request-devclass
     ).
 
     lo_response = mo_response->create_entity( ).
@@ -1522,7 +1338,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           lv_zip          TYPE xstring,
-          lt_objects      TYPE zcl_trm_abapgit=>tyt_ser_objs,
+          lt_objects      TYPE /atrm/cl_abapgit=>tyt_ser_objs,
           lo_response     TYPE REF TO if_rest_multipart_entity,
           lo_zip          TYPE REF TO if_rest_entity,
           lo_objects      TYPE REF TO if_rest_entity.
@@ -1536,12 +1352,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_abapgit=>serialize(
+    /atrm/cl_abapgit=>serialize(
       EXPORTING
-        iv_devclass = ls_request-devclass
+        devclass = ls_request-devclass
       IMPORTING
-        ev_zip      = lv_zip
-        et_objects  = lt_objects
+        zip      = lv_zip
+        objects  = lt_objects
     ).
 
     lo_response ?= mo_response->create_entity( iv_multipart = 'X' ).
@@ -1598,19 +1414,19 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     ).
 
     IF lv_pre EQ 'X'.
-      zcl_trm_post_activity=>pre(
+      /atrm/cl_post_activity=>pre(
         EXPORTING
-          iv_data     = lv_data
+          data     = lv_data
         IMPORTING
-          et_messages = ls_response-messages
-          ev_execute  = ls_response-execute
+          messages = ls_response-messages
+          execute  = ls_response-execute
       ).
     ELSE.
-      zcl_trm_post_activity=>execute(
+      /atrm/cl_post_activity=>execute(
         EXPORTING
-          iv_data     = lv_data
+          data     = lv_data
         IMPORTING
-          et_messages = ls_response-messages
+          messages = ls_response-messages
       ).
     ENDIF.
 
@@ -1621,7 +1437,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD get_installed_packages.
     TYPES: BEGIN OF ty_response,
-             packages TYPE zcl_trm_core=>tyt_trm_package,
+             packages TYPE /atrm/packages_t,
            END OF ty_response.
     DATA: ls_response TYPE ty_response,
           lo_response TYPE REF TO if_rest_entity.
@@ -1631,7 +1447,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    ls_response-packages = zcl_trm_singleton=>get( )->get_installed_packages( ).
+    ls_response-packages = /atrm/cl_singleton=>get( )->get_installed_packages( ).
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -1643,7 +1459,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
              trkorr    TYPE trkorr,
              new_owner TYPE tr_as4user,
            END OF ty_request.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1656,20 +1472,20 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
-    lo_transport->set_owner( iv_user = ls_request-new_owner ).
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
+    lo_transport->set_owner( user = ls_request-new_owner ).
   ENDMETHOD.
 
   METHOD get_package_dependencies.
     TYPES: BEGIN OF ty_request,
              devclass TYPE devclass,
              incl_sub TYPE flag,
-             log_id   TYPE ztrm_polling_id,
+             log_id   TYPE /atrm/polling_id,
            END OF ty_request,
            BEGIN OF ty_response,
-             dependencies TYPE ztrm_object_dependencies_t,
+             dependencies TYPE /atrm/object_dependencies_t,
            END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -1684,7 +1500,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    ls_response-dependencies = zcl_trm_object_dispacher=>get_package_dependencies(
+    ls_response-dependencies = /atrm/cl_object_dispacher=>get_package_dependencies(
         EXPORTING
           package      = ls_request-devclass
           incl_sub     = ls_request-incl_sub
@@ -1698,12 +1514,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD get_object_dependencies.
     TYPES: BEGIN OF ty_request,
-             object TYPE ztrm_object,
+             object TYPE /atrm/object,
            END OF ty_request,
            BEGIN OF ty_response,
-             dependencies TYPE ztrm_object_dependency_t,
+             dependencies TYPE /atrm/object_dependency_t,
            END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -1718,11 +1534,11 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    zcl_trm_object_dispacher=>get(
+    /atrm/cl_object_dispacher=>get(
         key = ls_request-object
       )->get_dependencies(
         IMPORTING
-          et_dependencies = ls_response-dependencies
+          dependencies = ls_response-dependencies
       ).
 
     lo_response = mo_response->create_entity( ).
@@ -1732,10 +1548,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD create_log_polling.
     TYPES: BEGIN OF ty_request,
-             event TYPE ztrm_polling_event,
+             event TYPE /atrm/polling_event,
            END OF ty_request,
            BEGIN OF ty_response,
-             id TYPE ztrm_polling_id,
+             id TYPE /atrm/polling_id,
            END OF ty_response.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request,
@@ -1751,7 +1567,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    ls_response-id = zcl_trm_log_polling=>create( ls_request-event )->id.
+    ls_response-id = /atrm/cl_log_polling=>create( ls_request-event )->id.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -1760,9 +1576,9 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD delete_log_polling.
     TYPES: BEGIN OF ty_request,
-             id TYPE ztrm_polling_id,
+             id TYPE /atrm/polling_id,
            END OF ty_request.
-    DATA: lo_log          TYPE REF TO zcl_trm_log_polling,
+    DATA: lo_log          TYPE REF TO /atrm/cl_log_polling,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request.
 
@@ -1781,12 +1597,12 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
 
   METHOD read_log_polling.
     TYPES: BEGIN OF ty_request,
-             id TYPE ztrm_polling_id,
+             id TYPE /atrm/polling_id,
            END OF ty_request,
            BEGIN OF ty_response,
-             message TYPE ztrm_polling_last_msg,
+             message TYPE /atrm/polling_last_msg,
            END OF ty_response.
-    DATA: lo_log          TYPE REF TO zcl_trm_log_polling,
+    DATA: lo_log          TYPE REF TO /atrm/cl_log_polling,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -1817,7 +1633,7 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
            BEGIN OF ty_response,
              stat TYPE tpstat,
            END OF ty_response.
-    DATA: lo_transport    TYPE REF TO zcl_trm_transport,
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
           ls_request      TYPE ty_request,
           ls_response     TYPE ty_response,
@@ -1832,10 +1648,10 @@ CLASS zcl_trm_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
 
-    CREATE OBJECT lo_transport EXPORTING iv_trkorr = ls_request-trkorr.
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     ls_response-stat = lo_transport->get_import_status(
       EXPORTING
-        iv_system = ls_request-system
+        system = ls_request-system
     ).
 
     lo_response = mo_response->create_entity( ).

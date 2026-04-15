@@ -1,4 +1,4 @@
-CLASS zcl_trm_rest_bulk DEFINITION
+CLASS /atrm/cl_rest_bulk DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC .
@@ -25,7 +25,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_trm_rest_bulk IMPLEMENTATION.
+CLASS /atrm/cl_rest_bulk IMPLEMENTATION.
 
   METHOD get_transport_objs.
     CHECK iv_trkorr IS NOT INITIAL.

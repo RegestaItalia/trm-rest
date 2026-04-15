@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_TRM_REST_RESOURCE</CLSNAME>
+    <CLSNAME>/ATRM/CL_REST_BULK</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>TRM Rest resource</DESCRIPT>
+    <DESCRIPT>TRM Rest Bulk Operations</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
