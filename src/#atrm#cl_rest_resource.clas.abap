@@ -50,6 +50,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
+    METHODS create_cust_tr
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
     METHODS create_package
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -206,6 +210,18 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
+    METHODS get_objects_lock
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
+    METHODS update_trm_package_data
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
+    METHODS get_tr_targets
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
 
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
@@ -251,7 +267,7 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     CONDENSE lv_method.
     TRANSLATE lv_method TO UPPER CASE.
     IF lv_method <> 'VERSION'.
-      CALL FUNCTION 'ZTRM_CHECK_AUTH'
+      CALL FUNCTION '/ATRM/CHECK_AUTH'
         EXCEPTIONS
           trm_rfc_unauthorized = 1.
       lv_reason = 'TRM_RFC_UNAUTHORIZED'.
@@ -508,6 +524,43 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
 
     /atrm/cl_transport=>create_workbench(
+      EXPORTING
+        text      = ls_request-text
+        target    = ls_request-target
+      RECEIVING
+        transport = lo_transport
+    ).
+    ls_response-trkorr = lo_transport->get_trkorr( ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD create_cust_tr.
+    TYPES: BEGIN OF ty_request,
+             text   TYPE as4text,
+             target TYPE tr_target,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             trkorr TYPE trkorr,
+           END OF ty_response.
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    /atrm/cl_transport=>create_customizing(
       EXPORTING
         text      = ls_request-text
         target    = ls_request-target
@@ -1653,6 +1706,76 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
       EXPORTING
         system = ls_request-system
     ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD get_objects_lock.
+    TYPES: BEGIN OF ty_request,
+             objects type /atrm/cl_utilities=>tyt_tadir,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             locks TYPE /atrm/object_lock_t,
+           END OF ty_response.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    ls_response-locks = /atrm/cl_utilities=>get_objs_locks(
+      EXPORTING
+        objects = ls_request-objects
+    ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD update_trm_package_data.
+    TYPES: BEGIN OF ty_request,
+             data TYPE /atrm/packages,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    /atrm/cl_utilities=>update_package( package = ls_request-data ).
+  ENDMETHOD.
+
+  METHOD get_tr_targets.
+    TYPES: BEGIN OF ty_response,
+             targets TYPE tarsystems,
+           END OF ty_response.
+    DATA: ls_response TYPE ty_response,
+          lo_response TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+
+    ls_response-targets = /atrm/cl_transport=>get_targets( ).
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
