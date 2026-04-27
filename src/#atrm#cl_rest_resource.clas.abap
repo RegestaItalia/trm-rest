@@ -1510,7 +1510,7 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
     IF ls_request-package_name IS INITIAL.
-      ls_response-packages = /atrm/cl_singleton=>get( )->get_installed_packages( ).
+      ls_response-packages = /atrm/cl_core=>get_installed_packages( ).
     ELSE.
       ls_response-packages = /atrm/cl_core=>get_installed_packages(
         package_name     = ls_request-package_name
