@@ -8,49 +8,45 @@ Legend
 + : added
 - : removed
 
+2026-04-27 v3.1.0
+-------------------
+! trm-server ^9.1.0
+
 2026-04-16 v3.0.0
 -------------------
-
 ! trm-server ^9.0.0
 ! move to /ATRM/
 
 2026-03-03 v2.6.0
 -------------------
-
 ! trm-server ^5.2.0
 
 2026-02-05 v2.5.0
 -------------------
-
 ! trm-server ^5.1.0
 * pretty name
 
 2025-06-03 v2.4.0
 -------------------
-
 ! trm-server ^4.0.0
 ! installed packages list from singleton
 + tr change owner api
 
 2025-05-29 v2.3.0
 -------------------
-
 ! trm-server ^3.1.0
 * fix no auth message
 
 2025-02-26 v2.2.0
 -------------------
-
 ! trm-server ^3.0.0
 
 2025-02-26 v2.0.1
 -------------------
-
 + add default error when no message provided
 
 2025-02-26 v2.0.0
 -------------------
-
 + add remove tr comments method
 + add tr migration methods
 * read table -> ignore table no data error
