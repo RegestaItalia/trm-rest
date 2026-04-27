@@ -1489,18 +1489,34 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_installed_packages.
-    TYPES: BEGIN OF ty_response,
+    TYPES: BEGIN OF ty_request,
+             package_name     TYPE /atrm/package_name,
+             package_registry TYPE /atrm/package_registry,
+           END OF ty_request,
+           BEGIN OF ty_response,
              packages TYPE /atrm/packages_t,
            END OF ty_response.
-    DATA: ls_response TYPE ty_response,
-          lo_response TYPE REF TO if_rest_entity.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
       RETURN.
     ENDIF.
 
-    ls_response-packages = /atrm/cl_singleton=>get( )->get_installed_packages( ).
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+    IF ls_request-package_name IS INITIAL.
+      ls_response-packages = /atrm/cl_singleton=>get( )->get_installed_packages( ).
+    ELSE.
+      ls_response-packages = /atrm/cl_core=>get_installed_packages(
+        package_name     = ls_request-package_name
+        package_registry = ls_request-package_registry
+      ).
+    ENDIF.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
@@ -1714,7 +1730,7 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
   METHOD get_objects_lock.
     TYPES: BEGIN OF ty_request,
-             objects type /atrm/cl_utilities=>tyt_tadir,
+             objects TYPE /atrm/cl_utilities=>tyt_tadir,
            END OF ty_request,
            BEGIN OF ty_response,
              locks TYPE /atrm/object_lock_t,
