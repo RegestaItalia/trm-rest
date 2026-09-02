@@ -98,6 +98,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
+    METHODS import_tr_multiple
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
     METHODS list_object_types
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -1312,10 +1316,16 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     TYPES: BEGIN OF ty_request,
              trkorr TYPE trkorr,
              system TYPE tmssysnam,
-           END OF ty_request.
+             test   TYPE flag,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             test_result TYPE stms_tp_import,
+           END OF ty_response.
     DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
@@ -1327,10 +1337,51 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
 
     CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
-    lo_transport->import(
+    ls_response-test_result = lo_transport->import(
       EXPORTING
         system = ls_request-system
+        test   = ls_request-test
     ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD import_tr_multiple.
+    TYPES: BEGIN OF ty_request,
+             trkorr TYPE /atrm/trkorr_t,
+             system TYPE tmssysnam,
+             test   TYPE flag,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             test_result TYPE stms_tp_import,
+           END OF ty_response.
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    ls_response-test_result = /atrm/cl_transport=>import_multiple(
+      EXPORTING
+        transports = ls_request-trkorr
+        system     = ls_request-system
+        test       = ls_request-test
+    ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 
 
