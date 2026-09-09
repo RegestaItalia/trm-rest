@@ -166,6 +166,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
+    METHODS lock_tr_objects
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
     METHODS delete_tms_transport
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -1654,6 +1658,28 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
     CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
     lo_transport->remove_comments( object = ls_request-object ).
+  ENDMETHOD.
+
+
+  METHOD lock_tr_objects.
+    TYPES: BEGIN OF ty_request,
+             trkorr  TYPE trkorr,
+           END OF ty_request.
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
+    lo_transport->lock( ).
   ENDMETHOD.
 
 
