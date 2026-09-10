@@ -1750,27 +1750,39 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD set_install_devc.
-    TYPES: BEGIN OF ty_request,
-             installdevc TYPE /atrm/cl_utilities=>tyt_installdevc,
-           END OF ty_request.
-    DATA: lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
+METHOD set_install_devc.
+  TYPES: BEGIN OF ty_request,
+           package      TYPE /atrm/packages,
+           package_exists TYPE flag,
+           installdevc  TYPE /atrm/cl_utilities=>tyt_installdevc,
+         END OF ty_request.
+  DATA: lv_request_json TYPE string,
+        ls_request      TYPE ty_request,
+        lo_utilities    TYPE REF TO /atrm/cl_utilities.
 
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
+  IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
+    ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+    RETURN.
+  ENDIF.
 
-    lv_request_json = get_request_json( ).
-    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+  lv_request_json = get_request_json( ).
+  /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
-
+  IF ls_request-package-package_name IS NOT INITIAL.
+    CREATE OBJECT lo_utilities.
+    lo_utilities->restore_install_metadata(
+      EXPORTING
+        package        = ls_request-package
+        package_exists = ls_request-package_exists
+        installdevc    = ls_request-installdevc
+    ).
+  ELSE.
     /atrm/cl_utilities=>add_install_devclass(
       EXPORTING
         installdevc = ls_request-installdevc
     ).
-  ENDMETHOD.
+  ENDIF.
+ENDMETHOD.
 
 
   METHOD set_transport_doc.
