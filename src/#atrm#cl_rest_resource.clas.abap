@@ -244,6 +244,14 @@ CLASS /atrm/cl_rest_resource DEFINITION
     METHODS get_existing_objs_bulk
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
+    METHODS acquire_act_locks
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING /atrm/cx_exception.
+    METHODS release_act_locks
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING /atrm/cx_exception.
 ENDCLASS.
 
 
@@ -2037,6 +2045,46 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
     lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD acquire_act_locks.
+    TYPES: BEGIN OF ty_request,
+             owner_token TYPE sysuuid_c32,
+             action_name TYPE char40,
+             keys TYPE /atrm/act_lock_t,
+           END OF ty_request.
+    DATA: ls_request TYPE ty_request,
+          lv_json TYPE string.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+    lv_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_json CHANGING data = ls_request ).
+    /atrm/cl_action_lock=>acquire(
+      it_keys = ls_request-keys
+      iv_owner_token = ls_request-owner_token
+      iv_action_name = ls_request-action_name ).
+  ENDMETHOD.
+
+  METHOD release_act_locks.
+    TYPES: BEGIN OF ty_request,
+             owner_token TYPE sysuuid_c32,
+             keys TYPE /atrm/act_lock_t,
+           END OF ty_request.
+    DATA: ls_request TYPE ty_request,
+          lv_json TYPE string.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+    lv_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_json CHANGING data = ls_request ).
+    /atrm/cl_action_lock=>release(
+      it_keys = ls_request-keys
+      iv_owner_token = ls_request-owner_token ).
   ENDMETHOD.
 
 ENDCLASS.
