@@ -236,7 +236,8 @@ CLASS /atrm/cl_rest_resource DEFINITION
       RAISING   /atrm/cx_exception.
     METHODS get_transport_entries
       EXPORTING ev_status TYPE i
-                ev_reason TYPE string.
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
 
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
@@ -1509,6 +1510,8 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
              delimiter   TYPE so_text001,
              options     TYPE esh_t_co_rfcrt_options,
              fields      TYPE esh_t_co_rfcrt_fields,
+             rowskips    TYPE soid-accnt,
+             rowcount    TYPE soid-accnt,
            END OF ty_request,
            BEGIN OF ty_response,
              data    TYPE tyt_tab512,
@@ -1534,6 +1537,8 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
       EXPORTING
         query_table        = ls_request-query_table
         delimiter          = ls_request-delimiter
+        rowskips           = ls_request-rowskips
+        rowcount           = ls_request-rowcount
       TABLES
         options            = ls_request-options
         fields             = ls_request-fields
