@@ -253,6 +253,14 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING /atrm/cx_exception.
+    METHODS set_install_tr
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
+    METHODS delete_install_devc
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
 ENDCLASS.
 
 
@@ -1771,6 +1779,7 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
              package        TYPE /atrm/packages,
              package_exists TYPE flag,
              installdevc    TYPE /atrm/cl_utilities=>tyt_installdevc,
+             installtr      TYPE /atrm/cl_utilities=>tyt_installtr,
            END OF ty_request.
     DATA: lv_request_json TYPE string,
           ls_request      TYPE ty_request,
@@ -1791,6 +1800,7 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
           package        = ls_request-package
           package_exists = ls_request-package_exists
           installdevc    = ls_request-installdevc
+          installtr      = ls_request-installtr
       ).
     ELSE.
       /atrm/cl_utilities=>add_install_devclass(
@@ -2092,4 +2102,48 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
       iv_owner_token = ls_request-owner_token ).
   ENDMETHOD.
 
+  METHOD set_install_tr.
+    TYPES: BEGIN OF ty_request,
+             package_name     TYPE /atrm/package_name,
+             package_registry TYPE /atrm/package_registry,
+             installtr        TYPE /atrm/cl_utilities=>tyt_installtr,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+    /atrm/cl_utilities=>set_install_transports(
+      EXPORTING
+        package_name     = ls_request-package_name
+        package_registry = ls_request-package_registry
+        installtr        = ls_request-installtr
+    ).
+  ENDMETHOD.
+  METHOD delete_install_devc.
+    TYPES: BEGIN OF ty_request,
+             installdevc TYPE /atrm/cl_utilities=>tyt_installdevc,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_delete.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+    /atrm/cl_utilities=>delete_install_devclass(
+      EXPORTING
+        installdevc = ls_request-installdevc
+    ).
+  ENDMETHOD.
 ENDCLASS.
