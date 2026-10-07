@@ -33,7 +33,8 @@ CLASS /atrm/cl_rest_resource DEFINITION
                 ev_reason TYPE string.
     METHODS get_dest
       EXPORTING ev_status TYPE i
-                ev_reason TYPE string.
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
     METHODS check_auth
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
@@ -837,32 +838,19 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     TYPES: BEGIN OF ty_response,
              dest TYPE sy-sysid,
            END OF ty_response.
-    DATA: lv_destination TYPE rfcdest,
-          ls_rfcsi       TYPE rfcsi,
-          ls_response    TYPE ty_response,
-          lo_response    TYPE REF TO if_rest_entity.
+    DATA: ls_response TYPE ty_response,
+          lo_response TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
       RETURN.
     ENDIF.
 
-    lv_destination = get_request_rfcdest( ).
+    ls_response-dest = /atrm/cl_utilities=>get_dest( get_request_rfcdest( ) ).
 
-    CALL FUNCTION 'RFC_SYSTEM_INFO' DESTINATION lv_destination
-      IMPORTING
-        rfcsi_export = ls_rfcsi
-      EXCEPTIONS
-        OTHERS       = 1.
-
-    IF sy-subrc <> 0.
-      ev_status = cl_rest_status_code=>gc_server_error_internal.
-    ELSE.
-      ls_response = ls_rfcsi-rfcsysid.
-      lo_response = mo_response->create_entity( ).
-      lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-      lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
-    ENDIF.
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 
 
