@@ -39,10 +39,12 @@ CLASS /atrm/cl_rest_bulk IMPLEMENTATION.
 
   METHOD get_existing_objs.
     CHECK it_tadir[] IS NOT INITIAL.
+    " TADIR is buffered: objects deleted by an import (tp/R3trans) stay in the buffer
     SELECT tadir~pgmid, tadir~object, tadir~obj_name, tadir~devclass FROM tadir
     FOR ALL ENTRIES IN @it_tadir
     WHERE tadir~pgmid EQ @it_tadir-pgmid AND tadir~object EQ @it_tadir-object AND tadir~obj_name EQ @it_tadir-obj_name
-    INTO CORRESPONDING FIELDS OF TABLE @rt_tadir.
+    INTO CORRESPONDING FIELDS OF TABLE @rt_tadir
+    BYPASSING BUFFER.
   ENDMETHOD.
 
 ENDCLASS.
