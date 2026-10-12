@@ -33,7 +33,8 @@ CLASS /atrm/cl_rest_resource DEFINITION
                 ev_reason TYPE string.
     METHODS get_dest
       EXPORTING ev_status TYPE i
-                ev_reason TYPE string.
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
     METHODS check_auth
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
@@ -55,6 +56,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
     METHODS create_package
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
+    METHODS delete_tmp_package
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
@@ -95,6 +100,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
     METHODS import_tr
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
+    METHODS import_tr_multiple
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
@@ -155,6 +164,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
     METHODS remove_tr_comments
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
+    METHODS lock_tr_objects
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
@@ -222,6 +235,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
+    METHODS get_transport_entries
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
 
     METHODS get_transport_objs_bulk
       EXPORTING ev_status TYPE i
@@ -229,6 +246,22 @@ CLASS /atrm/cl_rest_resource DEFINITION
     METHODS get_existing_objs_bulk
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string.
+    METHODS acquire_act_locks
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING /atrm/cx_exception.
+    METHODS release_act_locks
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING /atrm/cx_exception.
+    METHODS set_install_tr
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
+    METHODS delete_install_devc
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
 ENDCLASS.
 
 
@@ -482,6 +515,28 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
       EXPORTING
         data = ls_request
     ).
+  ENDMETHOD.
+
+
+  METHOD delete_tmp_package.
+    TYPES: BEGIN OF ty_request,
+             devclass TYPE devclass,
+           END OF ty_request.
+    DATA: lo_package      TYPE REF TO /atrm/cl_package,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_delete.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    CREATE OBJECT lo_package EXPORTING devclass = ls_request-devclass.
+    lo_package->delete_tmp( ).
   ENDMETHOD.
 
 
@@ -783,32 +838,19 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     TYPES: BEGIN OF ty_response,
              dest TYPE sy-sysid,
            END OF ty_response.
-    DATA: lv_destination TYPE rfcdest,
-          ls_rfcsi       TYPE rfcsi,
-          ls_response    TYPE ty_response,
-          lo_response    TYPE REF TO if_rest_entity.
+    DATA: ls_response TYPE ty_response,
+          lo_response TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
       RETURN.
     ENDIF.
 
-    lv_destination = get_request_rfcdest( ).
+    ls_response-dest = /atrm/cl_utilities=>get_dest( get_request_rfcdest( ) ).
 
-    CALL FUNCTION 'RFC_SYSTEM_INFO' DESTINATION lv_destination
-      IMPORTING
-        rfcsi_export = ls_rfcsi
-      EXCEPTIONS
-        OTHERS       = 1.
-
-    IF sy-subrc <> 0.
-      ev_status = cl_rest_status_code=>gc_server_error_internal.
-    ELSE.
-      ls_response = ls_rfcsi-rfcsysid.
-      lo_response = mo_response->create_entity( ).
-      lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-      lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
-    ENDIF.
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 
 
@@ -1312,10 +1354,16 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     TYPES: BEGIN OF ty_request,
              trkorr TYPE trkorr,
              system TYPE tmssysnam,
-           END OF ty_request.
+             test   TYPE flag,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             test_result TYPE stms_tp_import,
+           END OF ty_response.
     DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
           lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
@@ -1327,10 +1375,51 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
 
     CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
-    lo_transport->import(
+    ls_response-test_result = lo_transport->import(
       EXPORTING
         system = ls_request-system
+        test   = ls_request-test
     ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD import_tr_multiple.
+    TYPES: BEGIN OF ty_request,
+             trkorr TYPE /atrm/trkorr_t,
+             system TYPE tmssysnam,
+             test   TYPE flag,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             test_result TYPE stms_tp_import,
+           END OF ty_response.
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    ls_response-test_result = /atrm/cl_transport=>import_multiple(
+      EXPORTING
+        transports = ls_request-trkorr
+        system     = ls_request-system
+        test       = ls_request-test
+    ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 
 
@@ -1417,6 +1506,8 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
              delimiter   TYPE so_text001,
              options     TYPE esh_t_co_rfcrt_options,
              fields      TYPE esh_t_co_rfcrt_fields,
+             rowskips    TYPE soid-accnt,
+             rowcount    TYPE soid-accnt,
            END OF ty_request,
            BEGIN OF ty_response,
              data    TYPE tyt_tab512,
@@ -1442,6 +1533,8 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
       EXPORTING
         query_table        = ls_request-query_table
         delimiter          = ls_request-delimiter
+        rowskips           = ls_request-rowskips
+        rowcount           = ls_request-rowcount
       TABLES
         options            = ls_request-options
         fields             = ls_request-fields
@@ -1580,6 +1673,28 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD lock_tr_objects.
+    TYPES: BEGIN OF ty_request,
+             trkorr TYPE trkorr,
+           END OF ty_request.
+    DATA: lo_transport    TYPE REF TO /atrm/cl_transport,
+          lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
+    lo_transport->lock( ).
+  ENDMETHOD.
+
+
   METHOD rename_transport_request.
     TYPES: BEGIN OF ty_request,
              trkorr  TYPE trkorr,
@@ -1649,10 +1764,14 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
   METHOD set_install_devc.
     TYPES: BEGIN OF ty_request,
-             installdevc TYPE /atrm/cl_utilities=>tyt_installdevc,
+             package        TYPE /atrm/packages,
+             package_exists TYPE flag,
+             installdevc    TYPE /atrm/cl_utilities=>tyt_installdevc,
+             installtr      TYPE /atrm/cl_utilities=>tyt_installtr,
            END OF ty_request.
     DATA: lv_request_json TYPE string,
-          ls_request      TYPE ty_request.
+          ls_request      TYPE ty_request,
+          lo_utilities    TYPE REF TO /atrm/cl_utilities.
 
     IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
       ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
@@ -1662,11 +1781,21 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     lv_request_json = get_request_json( ).
     /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
 
-
-    /atrm/cl_utilities=>add_install_devclass(
-      EXPORTING
-        installdevc = ls_request-installdevc
-    ).
+    IF ls_request-package-package_name IS NOT INITIAL.
+      CREATE OBJECT lo_utilities.
+      lo_utilities->restore_install_metadata(
+        EXPORTING
+          package        = ls_request-package
+          package_exists = ls_request-package_exists
+          installdevc    = ls_request-installdevc
+          installtr      = ls_request-installtr
+      ).
+    ELSE.
+      /atrm/cl_utilities=>add_install_devclass(
+        EXPORTING
+          installdevc = ls_request-installdevc
+      ).
+    ENDIF.
   ENDMETHOD.
 
 
@@ -1881,6 +2010,128 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
       EXPORTING
         file_path = lv_file_path
         file      = lv_file
+    ).
+  ENDMETHOD.
+
+  METHOD get_transport_entries.
+    TYPES: BEGIN OF ty_request,
+             trkorr TYPE trkorr,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             e071   TYPE /atrm/cl_transport=>tyt_e071,
+             tadir  TYPE scts_tadir,
+             tdevc  TYPE /atrm/cl_core=>tyt_tdevc,
+             tdevct TYPE /atrm/cl_core=>tyt_tdevct,
+           END OF ty_response.
+    DATA lv_request_json TYPE string.
+    DATA ls_request TYPE ty_request.
+    DATA ls_response TYPE ty_response.
+    DATA lo_response TYPE REF TO if_rest_entity.
+    DATA lo_transport TYPE REF TO /atrm/cl_transport.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+    CREATE OBJECT lo_transport EXPORTING trkorr = ls_request-trkorr.
+    lo_transport->get_entries(
+      IMPORTING
+        e071 = ls_response-e071
+        tadir = ls_response-tadir
+        tdevc = ls_response-tdevc
+        tdevct = ls_response-tdevct ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD acquire_act_locks.
+    TYPES: BEGIN OF ty_request,
+             owner_token TYPE sysuuid_c32,
+             action_name TYPE char40,
+             keys TYPE /atrm/act_lock_t,
+           END OF ty_request.
+    DATA: ls_request TYPE ty_request,
+          lv_json TYPE string.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+    lv_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_json CHANGING data = ls_request ).
+    /atrm/cl_action_lock=>acquire(
+      it_keys = ls_request-keys
+      iv_owner_token = ls_request-owner_token
+      iv_action_name = ls_request-action_name ).
+  ENDMETHOD.
+
+  METHOD release_act_locks.
+    TYPES: BEGIN OF ty_request,
+             owner_token TYPE sysuuid_c32,
+             keys TYPE /atrm/act_lock_t,
+           END OF ty_request.
+    DATA: ls_request TYPE ty_request,
+          lv_json TYPE string.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+    lv_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_json CHANGING data = ls_request ).
+    /atrm/cl_action_lock=>release(
+      it_keys = ls_request-keys
+      iv_owner_token = ls_request-owner_token ).
+  ENDMETHOD.
+
+  METHOD set_install_tr.
+    TYPES: BEGIN OF ty_request,
+             package_name     TYPE /atrm/package_name,
+             package_registry TYPE /atrm/package_registry,
+             installtr        TYPE /atrm/cl_utilities=>tyt_installtr,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_put.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+    /atrm/cl_utilities=>set_install_transports(
+      EXPORTING
+        package_name     = ls_request-package_name
+        package_registry = ls_request-package_registry
+        installtr        = ls_request-installtr
+    ).
+  ENDMETHOD.
+  METHOD delete_install_devc.
+    TYPES: BEGIN OF ty_request,
+             installdevc TYPE /atrm/cl_utilities=>tyt_installdevc,
+           END OF ty_request.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_delete.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+    /atrm/cl_utilities=>delete_install_devclass(
+      EXPORTING
+        installdevc = ls_request-installdevc
     ).
   ENDMETHOD.
 ENDCLASS.
