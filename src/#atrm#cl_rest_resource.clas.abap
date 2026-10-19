@@ -262,6 +262,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
+    METHODS get_transport_layers
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
 ENDCLASS.
 
 
@@ -2133,5 +2137,33 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
       EXPORTING
         installdevc = ls_request-installdevc
     ).
+  ENDMETHOD.
+
+  METHOD get_transport_layers.
+    TYPES: BEGIN OF ty_request,
+             target TYPE tarsystem,
+           END OF ty_request,
+           BEGIN OF ty_response,
+             layers TYPE /atrm/devlayer_t,
+           END OF ty_response.
+    DATA: lv_request_json TYPE string,
+          ls_request      TYPE ty_request,
+          ls_response     TYPE ty_response,
+          lo_response     TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    lv_request_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_request_json CHANGING data = ls_request ).
+
+
+    ls_response-layers = /atrm/cl_transport=>get_transport_layers( ls_request-target ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
 ENDCLASS.

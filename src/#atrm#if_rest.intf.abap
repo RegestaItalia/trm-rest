@@ -1,6 +1,6 @@
-INTERFACE /atrm/if_rest
-  PUBLIC .
+interface /ATRM/IF_REST
+  public .
 
-  CONSTANTS version TYPE string VALUE '6.0.0' ##NO_TEXT.
 
-ENDINTERFACE.
+  constants VERSION type STRING value '7.0.0' ##NO_TEXT.
+endinterface.
