@@ -1,4 +1,4 @@
-# <a href="https://docs.trmregistry.com/#/server/README"><img src="https://docs.trmregistry.com/logo.png" height="40" alt="TRM"></a>
+# <a href="https://docs.trmregistry.com"><img src="https://github.com/RegestaItalia/trm-docs/raw/main/docs/assets/logo.png" height="40" alt="TRM"></a>
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-1.3.0-4baaaa.svg)](https://github.com/RegestaItalia/trm-docs/blob/main/CODE_OF_CONDUCT.md)
 [![TRM License](https://img.shields.io/endpoint?url=https://trmregistry.com/public/shieldio/license/trm-rest)](https://trmregistry.com/package/trm-rest)
@@ -16,7 +16,7 @@
 🚚 **TRM (Transport Request Manager)** is a package manager inspired solution built leveraging CTS that simplifies SAP ABAP transports.
 
 <p align="center">
-  <img src="https://docs.trmregistry.com/logo.png" alt="TRM Logo" />
+  <img src="https://github.com/RegestaItalia/trm-docs/raw/main/docs/assets/logo.png" alt="TRM Logo" />
 </p>
 
 TRM introduces **package-based software delivery** to the SAP ecosystem, bringing with it semantic versioning, dependency management, and automated deployment activities.
@@ -64,15 +64,15 @@ If not installed, the client can still communicate directly with the SAP system,
 
 ---
 
-<!-- START OF SETUP.MD -->
-# Server setup
+# Rest setup
 
-**trm-server** is the server-side component of TRM.
+**trm-rest** is the REST wrapper for **trm-server**.
 
 It acts as the secure bridge between the **SAP application server** and the **TRM client**.
 
 It exposes the APIs that allow TRM to import/export transports, and, as a consequence, it must be installed **only** on source and target systems, as its not required on any other system in the landscape.
 
+<!-- START OF SETUP.MD -->
 ## First Installation
 
 The first installation must be performed using the [standalone installer](https://raw.githubusercontent.com/RegestaItalia/trm-server/refs/heads/main/ztrm_installer.prog.abap).
@@ -87,25 +87,25 @@ After the initial installation, it is recommended to install subsequent theit up
 2. Open transaction `SE38` and create a new report called `ZTRM_INSTALLER`
 
 <p align="center">
-    <img src="https://docs.trmregistry.com/server/images/se38_1.png" alt="SE38">
+    <img src="https://github.com/RegestaItalia/trm-docs/blob/main/docs/assets/server/se38_1.png?raw=true" alt="SE38">
 </p>
 
 3. Give it a title and make sure to set the type to "Executable program"
 
 <p align="center">
-    <img src="https://docs.trmregistry.com/server/images/se38_2.png" alt="SE38">
+    <img src="https://github.com/RegestaItalia/trm-docs/blob/main/docs/assets/server/se38_2.png?raw=true" alt="SE38">
 </p>
 
 4. Save as a local object (or in temporary package `$TMP`)
 
 <p align="center">
-    <img src="https://docs.trmregistry.com/server/images/se38_3.png" alt="SE38">
+    <img src="https://github.com/RegestaItalia/trm-docs/blob/main/docs/assets/server/se38_3.png?raw=true" alt="SE38">
 </p>
 
 5. Copy and paste the source code of the report (or upload) and activate
 
 <p align="center">
-    <img src="https://docs.trmregistry.com/server/images/se38_4.png" alt="SE38">
+    <img src="https://github.com/RegestaItalia/trm-docs/blob/main/docs/assets/server/se38_4.png?raw=true" alt="SE38">
 </p>
 
 ### Release file install (From file)
@@ -120,7 +120,7 @@ After the initial installation, it is recommended to install subsequent theit up
 6. Execute and wait for install to complete (~ 5 minutes)
 
 <p align="center">
-    <img src="https://docs.trmregistry.com/server/images/offline.png" alt="ZTRM_INSTALLER">
+    <img src="https://github.com/RegestaItalia/trm-docs/blob/main/docs/assets/server/offline.png?raw=true" alt="ZTRM_INSTALLER">
 </p>
 
 <details>
@@ -169,7 +169,7 @@ The online installation is only possible if your system is allowed to connect to
 2. Open the "SSL client Client SSL Client (Anonymous)" folder
 
 <p align="center">
-    <img src="https://docs.trmregistry.com/server/images/strust_1.png" alt="STRUST">
+    <img src="https://github.com/RegestaItalia/trm-docs/blob/main/docs/assets/server/strust_1.png?raw=true" alt="STRUST">
 </p>
 
 3. Click on the Change button
@@ -178,7 +178,7 @@ The online installation is only possible if your system is allowed to connect to
 6. Repeat the process for all downloaded certificates
 
 <p align="center">
-    <img src="https://docs.trmregistry.com/server/images/strust_2.png" alt="STRUST">
+    <img src="https://github.com/RegestaItalia/trm-docs/blob/main/docs/assets/server/strust_2.png?raw=true" alt="STRUST">
 </p>
 
 7. Save
@@ -190,7 +190,7 @@ The online installation is only possible if your system is allowed to connect to
 3. Execute and wait for install to complete (~ 5 minutes)
 
 <p align="center">
-    <img src="https://docs.trmregistry.com/server/images/online.png" alt="ZTRM_INSTALLER">
+    <img src="https://github.com/RegestaItalia/trm-docs/blob/main/docs/assets/server/online.png?raw=true" alt="ZTRM_INSTALLER">
 </p>
 
 </details>
@@ -226,7 +226,6 @@ If you are running a **demo system**, you can use the following keys
 ### Other systems
 
 For abapGit to work, you need to generate a valid developer key using the [Development Namespace Application](https://me.sap.com/namespaces/opensource).
-
 <!-- END OF SETUP.MD -->
 
 ---
