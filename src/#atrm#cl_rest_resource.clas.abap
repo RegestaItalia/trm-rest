@@ -159,10 +159,6 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
-    METHODS get_r3trans_info
-      EXPORTING ev_status TYPE i
-                ev_reason TYPE string
-      RAISING   /atrm/cx_exception.
     METHODS remove_tr_comments
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
@@ -1136,28 +1132,6 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
     lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
   ENDMETHOD.
-
-
-  METHOD get_r3trans_info.
-    TYPES: BEGIN OF ty_response,
-             log TYPE string,
-           END OF ty_response.
-    DATA: ls_response TYPE ty_response,
-          lo_response TYPE REF TO if_rest_entity.
-
-    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
-      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
-      RETURN.
-    ENDIF.
-
-
-    ls_response-log = /atrm/cl_utilities=>get_r3trans_info( ).
-
-    lo_response = mo_response->create_entity( ).
-    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
-    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
-  ENDMETHOD.
-
 
   METHOD get_request_json.
     rv_json = mo_request->get_entity( )->get_string_data( ).
