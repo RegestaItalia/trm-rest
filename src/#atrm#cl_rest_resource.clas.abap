@@ -266,6 +266,10 @@ CLASS /atrm/cl_rest_resource DEFINITION
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
+METHODS get_system_info
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING   /atrm/cx_exception.
 ENDCLASS.
 
 
@@ -1165,7 +1169,13 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
 
   METHOD get_request_rfcdest.
-    rv_rfcdest = mo_request->get_uri_query_parameter( 'rfcdest' ).
+    " only users authorized to TRM can reach other systems through an RFC destination
+    CALL FUNCTION '/ATRM/CHECK_AUTH'
+      EXCEPTIONS
+        trm_rfc_unauthorized = 1.
+    IF sy-subrc = 0.
+      rv_rfcdest = mo_request->get_uri_query_parameter( 'rfcdest' ).
+    ENDIF.
     IF rv_rfcdest IS INITIAL.
       rv_rfcdest = 'NONE'.
     ENDIF.
@@ -1291,7 +1301,8 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     lv_method = mo_request->get_uri_attribute( iv_name = 'METH' ).
     CONDENSE lv_method.
     TRANSLATE lv_method TO UPPER CASE.
-    IF lv_method <> 'VERSION'.
+    " like the standard RFC_SYSTEM_INFO, the system info doesn't require TRM authorization
+    IF lv_method <> 'VERSION' AND lv_method <> 'GET_SYSTEM_INFO'.
       CALL FUNCTION '/ATRM/CHECK_AUTH'
         EXCEPTIONS
           trm_rfc_unauthorized = 1.
@@ -2161,6 +2172,45 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
 
 
     ls_response-layers = /atrm/cl_transport=>get_transport_layers( ls_request-target ).
+
+    lo_response = mo_response->create_entity( ).
+    lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
+    lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD get_system_info.
+    TYPES: BEGIN OF ty_response,
+             dest           TYPE rfcsi-rfcsysid,
+             db_system      TYPE rfcsi-rfcdbsys,
+             kernel_release TYPE rfcsi-rfckernrl,
+           END OF ty_response.
+    DATA: lv_rfcdest  TYPE rfcdest,
+          ls_rfcsi    TYPE rfcsi,
+          ls_response TYPE ty_response,
+          lo_response TYPE REF TO if_rest_entity.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_get.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+
+    " like RFC_SYSTEM_INFO over RFC, it describes the system TRM works on: the RFC destination
+    " is honored without TRM authorization, so the system ID can be read by any user
+    lv_rfcdest = mo_request->get_uri_query_parameter( 'rfcdest' ).
+    IF lv_rfcdest IS INITIAL.
+      lv_rfcdest = 'NONE'.
+    ENDIF.
+    CALL FUNCTION 'RFC_SYSTEM_INFO' DESTINATION lv_rfcdest
+      IMPORTING
+        rfcsi_export = ls_rfcsi
+      EXCEPTIONS
+        OTHERS       = 1.
+    IF sy-subrc <> 0.
+      /atrm/cx_exception=>raise( ).
+    ENDIF.
+    ls_response-dest = ls_rfcsi-rfcsysid.
+    ls_response-db_system = ls_rfcsi-rfcdbsys.
+    ls_response-kernel_release = ls_rfcsi-rfckernrl.
 
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
