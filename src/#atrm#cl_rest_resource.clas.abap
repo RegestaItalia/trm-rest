@@ -270,6 +270,18 @@ METHODS get_system_info
       EXPORTING ev_status TYPE i
                 ev_reason TYPE string
       RAISING   /atrm/cx_exception.
+METHODS log_action_start
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING /atrm/cx_exception.
+METHODS log_action_end
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING /atrm/cx_exception.
+METHODS log_tr_events
+      EXPORTING ev_status TYPE i
+                ev_reason TYPE string
+      RAISING /atrm/cx_exception.
 ENDCLASS.
 
 
@@ -2215,5 +2227,74 @@ CLASS /atrm/cl_rest_resource IMPLEMENTATION.
     lo_response = mo_response->create_entity( ).
     lo_response->set_content_type( iv_media_type = if_rest_media_type=>gc_appl_json ).
     lo_response->set_string_data( /ui2/cl_json=>serialize( data = ls_response pretty_name = 'X' ) ).
+  ENDMETHOD.
+
+  METHOD log_action_start.
+    TYPES: BEGIN OF ty_request,
+             action_id        TYPE /atrm/log_action_id,
+             session_id       TYPE /atrm/log_session_id,
+             parent_action_id TYPE /atrm/log_action_id,
+             action_name      TYPE /atrm/log_action_name,
+             package_name     TYPE /atrm/package_name,
+             package_registry TYPE /atrm/package_registry,
+             version          TYPE /atrm/log_version,
+           END OF ty_request.
+    DATA: ls_request TYPE ty_request,
+          lv_json    TYPE string.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+    lv_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_json CHANGING data = ls_request ).
+    /atrm/cl_action_log=>start_action(
+      iv_action_id = ls_request-action_id
+      iv_session_id = ls_request-session_id
+      iv_parent_action_id = ls_request-parent_action_id
+      iv_action_name = ls_request-action_name
+      iv_package_name = ls_request-package_name
+      iv_package_registry = ls_request-package_registry
+      iv_version = ls_request-version ).
+  ENDMETHOD.
+
+  METHOD log_action_end.
+    TYPES: BEGIN OF ty_request,
+             action_id TYPE /atrm/log_action_id,
+             status    TYPE /atrm/log_status,
+             version   TYPE /atrm/log_version,
+           END OF ty_request.
+    DATA: ls_request TYPE ty_request,
+          lv_json    TYPE string.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+    lv_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_json CHANGING data = ls_request ).
+    /atrm/cl_action_log=>end_action(
+      iv_action_id = ls_request-action_id
+      iv_status = ls_request-status
+      iv_version = ls_request-version ).
+  ENDMETHOD.
+
+  METHOD log_tr_events.
+    TYPES: BEGIN OF ty_request,
+             action_id TYPE /atrm/log_action_id,
+             events    TYPE /atrm/log_evt_in_t,
+           END OF ty_request.
+    DATA: ls_request TYPE ty_request,
+          lv_json    TYPE string.
+
+    IF mo_request->get_method( ) <> if_rest_message=>gc_method_post.
+      ev_status = cl_rest_status_code=>gc_client_error_meth_not_allwd.
+      RETURN.
+    ENDIF.
+    lv_json = get_request_json( ).
+    /ui2/cl_json=>deserialize( EXPORTING json = lv_json CHANGING data = ls_request ).
+    /atrm/cl_action_log=>add_events(
+      iv_action_id = ls_request-action_id
+      it_events = ls_request-events ).
   ENDMETHOD.
 ENDCLASS.
