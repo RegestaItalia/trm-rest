@@ -8,6 +8,14 @@ Legend
 + : added
 - : removed
 
+2026-11-10 v7.1.0
+-------------------
+! trm-server ^8.1.0
++ get_system_info api
++ log_action_start, log_action_end, log_tr_events apis
+! rfcdest query parameter requires authorization
+- get_r3trans_info api
+
 2026-10-19 v7.0.0
 -------------------
 ! trm-server ^8.0.0
