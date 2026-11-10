@@ -10,6 +10,7 @@ Legend
 
 2026-11-10 v7.1.0
 -------------------
+! trm-server ^8.1.0
 + get_system_info api
 + log_action_start, log_action_end, log_tr_events apis
 ! rfcdest query parameter requires authorization
